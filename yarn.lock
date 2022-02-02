@@ -390,10 +390,10 @@
   dependencies:
     "@types/geojson" "^7946.0.7"
 
-"@iiif/vault@0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@iiif/vault/-/vault-0.9.3.tgz#9aadb1ef30cbb90936cc6d5ec63b0388d19b8dac"
-  integrity sha512-LIxbUxFn7Qrjf05ZHwPItxXj1weXUjlzAZY1VnXTiIlJmwVSWkeS/I3N6K+8YR8QjGdItQC6CAE/wqgHjO/3xA==
+"@iiif/vault@0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@iiif/vault/-/vault-0.9.5.tgz#2dd1c5fbef2fc5065ee985c5e48b5f7884d2f4e9"
+  integrity sha512-WnjlAbk7Yux/sZeV6qDWiz+HAzLY0tPv+D2f09IBAfmXoApC6pikT78c7EWkEox63NWxQBnHhL1djKvBtL12XQ==
   dependencies:
     "@iiif/parser" "^1.0.0"
     "@iiif/presentation-2" "^1.0.0"

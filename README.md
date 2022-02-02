@@ -98,6 +98,21 @@ $el.addEventListener('click', props.onClick);
 // In React this might look like: <div className="anno" {...props} />
 ```
 
+## Thumbnail
+Work-in-progress vault-driven thumbnails.
+
+```ts
+import { createThumbnailHelper } from '@iiif/vault-helpers/thumbnail';
+
+const vault = new Vault();
+const helper = createThumbnailHelper(vault);
+
+const thumbnail = helper.getBestThumbnailAtSize(canvas, { width: 256, height: 256 });
+// thumbnail.best.id
+```
+
+
+## New helpers
 
 Custom helpers may opt to use a standard naming (`iiif-vault-[name]-helper`) and a format similar to this:
 ```ts
@@ -109,3 +124,5 @@ function createXYZHelper(vault: Vault, ...dependencies: any[]) {
   };
 }
 ```
+
+PRs always welcome for new community helpers.

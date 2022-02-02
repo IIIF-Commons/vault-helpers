@@ -10,16 +10,25 @@
   ],
   "exports": {
     ".": {
-      "node": {
-        "require": "./dist/cjs-node/index.js",
-        "import": "./dist/esm-node/index.mjs",
-        "default": "./dist/cjs-node/index.js"
-      },
-      "browser": {
-        "require": "./dist/cjs/index.js",
-        "import": "./dist/esm/index.js",
-        "default": "./dist/index.umd.js"
-      }
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/index.umd.js"
+    },
+    "./events": {
+      "require": "./dist/events/cjs/events.js",
+      "import": "./dist/events/esm/events.mjs"
+    },
+    "./i18n": {
+      "require": "./dist/i18n/cjs/i18n.js",
+      "import": "./dist/i18n/esm/i18n.mjs"
+    },
+    "./styles": {
+      "require": "./dist/styles/cjs/styles.js",
+      "import": "./dist/styles/esm/styles.mjs"
+    },
+    "./thumbnail": {
+      "require": "./dist/thumbnail/cjs/thumbnail.js",
+      "import": "./dist/thumbnail/esm/thumbnail.mjs"
     }
   },
   "scripts": {
@@ -32,7 +41,7 @@
     "@iiif/parser": "^1.0.0",
     "@iiif/presentation-2": "^1.0.0",
     "@iiif/presentation-3": "^1.0.0",
-    "@iiif/vault": "0.9.3",
+    "@iiif/vault": "0.9.5",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {

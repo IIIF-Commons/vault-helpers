@@ -105,5 +105,5 @@ export function getValue(
   inputText: string | InternationalString | null | undefined,
   options: { defaultText?: string; separator?: string; fallbackLanguages?: string[] } = {}
 ) {
-  return buildLocaleString(inputText, navigator.language, options);
+  return buildLocaleString(inputText, typeof navigator !== 'undefined' ? navigator.language : undefined, options);
 }
