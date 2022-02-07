@@ -54,6 +54,18 @@ export default [
       browser: false,
     },
   }),
+  createRollupConfig({
+    ...baseConfig,
+    input: './src/index.ts',
+    distPreset: 'esm',
+    external,
+  }),
+  createRollupConfig({
+    ...baseConfig,
+    input: './src/index.ts',
+    distPreset: 'cjs',
+    external,
+  }),
 
   ...singleFileHelper('events'),
   ...singleFileHelper('styles'),
