@@ -32,16 +32,17 @@
     }
   },
   "scripts": {
+    "start": "vite demos",
     "build": "tsc -p . --declaration --emitDeclarationOnly && rollup -c",
     "prepublishOnly": "tsc -p . --declaration --emitDeclarationOnly && rollup -c",
     "test": "jest"
   },
   "dependencies": {
-    "@atlas-viewer/iiif-image-api": "^1.2.6",
-    "@iiif/parser": "^1.0.2",
-    "@iiif/presentation-2": "^1.0.1",
-    "@iiif/presentation-3": "^1.0.4",
-    "@iiif/vault": "^0.9.8",
+    "@atlas-viewer/iiif-image-api": "2.*",
+    "@iiif/parser": "1.*",
+    "@iiif/presentation-2": "1.*",
+    "@iiif/presentation-3": "1.*",
+    "@iiif/vault": "0.9.*",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
@@ -59,7 +60,8 @@
     "rollup-library-template": "^1.0.2",
     "ts-jest": "^27.1.3",
     "tslib": "^2.3.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "vite": "^2.9.5"
   },
   "publishConfig": {
     "access": "public"
