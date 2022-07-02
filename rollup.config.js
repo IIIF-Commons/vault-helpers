@@ -8,7 +8,7 @@ const baseConfig = {
   },
 };
 
-const external = ['@iiif/vault', '@iiif/parser', 'redux', 'typesafe-actions'];
+const external = ['@iiif/vault', '@iiif/parser', '@atlas-viewer/iiif-image-api', 'redux', 'typesafe-actions'];
 const nodeExternal = ['node-fetch'];
 
 function singleFileHelper(name) {
