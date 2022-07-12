@@ -2,13 +2,14 @@
   "name": "@iiif/vault-helpers",
   "version": "0.9.6",
   "license": "MIT",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.mjs",
-  "types": "./.build/types/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.mjs",
+  "types": ".build/types/index.d.ts",
   "files": [
     ".build",
     "dist"
   ],
+  "sideEffects": false,
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
