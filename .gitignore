@@ -2,3 +2,5 @@
 node_modules
 dist
 *.log
+pkg-tests/ts/yarn.lock
+pkg-tests/ts/node_modules

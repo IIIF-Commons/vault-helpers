@@ -26,18 +26,18 @@ describe('style helper', function () {
 
     expect(times).toEqual(3);
     expect(helper.getAppliedStyles({ id: 'https://example.org/manifest-1' })).toMatchInlineSnapshot(`
-      Object {
-        "scope-1": Object {
+      {
+        "scope-1": {
           "background": "red",
         },
-        "scope-2": Object {
+        "scope-2": {
           "background": "green",
         },
       }
     `);
     expect(helper.getAppliedStyles({ id: 'https://example.org/manifest-2' })).toMatchInlineSnapshot(`
-      Object {
-        "scope-1": Object {
+      {
+        "scope-1": {
           "background": "blue",
         },
       }
@@ -66,18 +66,18 @@ describe('style helper', function () {
 
     expect(times).toEqual(1);
     expect(helper.getAppliedStyles({ id: 'https://example.org/manifest-1' })).toMatchInlineSnapshot(`
-      Object {
-        "scope-1": Object {
+      {
+        "scope-1": {
           "background": "red",
         },
-        "scope-2": Object {
+        "scope-2": {
           "background": "green",
         },
       }
     `);
     expect(helper.getAppliedStyles({ id: 'https://example.org/manifest-2' })).toMatchInlineSnapshot(`
-      Object {
-        "scope-1": Object {
+      {
+        "scope-1": {
           "background": "blue",
         },
       }
