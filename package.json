@@ -43,6 +43,10 @@
     "./content-state": {
       "require": "./dist/content-state/cjs/content-state.js",
       "import": "./dist/content-state/esm/content-state.mjs"
+    },
+    "./painting-annotations": {
+      "require": "./dist/painting-annotations/cjs/painting-annotations.js",
+      "import": "./dist/painting-annotations/esm/painting-annotations.mjs"
     }
   },
   "typesVersions": {
@@ -70,6 +74,9 @@
       ],
       "content-state": [
         ".build/types/content-state.d.ts"
+      ],
+      "painting-annotations": [
+        ".build/types/painting-annotations.d.ts"
       ]
     }
   },
@@ -80,14 +87,20 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@atlas-viewer/iiif-image-api": "2.*",
-    "@iiif/parser": "1.*",
-    "@iiif/presentation-2": "1.*",
-    "@iiif/presentation-3": "1.*",
-    "@iiif/vault": "0.9.*",
-    "tiny-invariant": "^1.2.0"
+    "@iiif/presentation-2": "1.x",
+    "@iiif/presentation-3": "1.x"
+  },
+  "optionalDependencies": {
+    "react-i18next": "^11.18.0"
+  },
+  "peerDependencies": {
+    "@atlas-viewer/iiif-image-api": "2.x",
+    "@iiif/vault": "0.9.x"
   },
   "devDependencies": {
+    "@atlas-viewer/iiif-image-api": "^2.0.5",
+    "@iiif/vault": "^0.9.19",
+    "@iiif/parser": "^1.0.10",
     "@types/react": "^17.0.38",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
@@ -99,7 +112,7 @@
     "happy-dom": "^6.0.3",
     "prettier": "^2.5.1",
     "react": "17.0.2",
-    "react-i18next": "^11.15.3",
+    "react-i18next": "^11.18.0",
     "rollup": "^2.64.0",
     "rollup-library-template": "^1.0.2",
     "tslib": "^2.4.0",

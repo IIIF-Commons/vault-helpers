@@ -6,6 +6,7 @@ import * as styles from '@iiif/vault-helpers/styles';
 import * as thumbnail from '@iiif/vault-helpers/thumbnail';
 import * as annotationTargets from '@iiif/vault-helpers/annotation-targets';
 import * as contentState from '@iiif/vault-helpers/content-state';
+import * as paintingAnnotations from '@iiif/vault-helpers/painting-annotations';
 
 console.log(vault);
 console.log(events);
@@ -15,3 +16,4 @@ console.log(styles);
 console.log(thumbnail);
 console.log(annotationTargets);
 console.log(contentState);
+console.log(paintingAnnotations);

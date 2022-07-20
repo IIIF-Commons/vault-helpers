@@ -6,6 +6,7 @@ const styles = require('@iiif/vault-helpers/styles');
 const thumbnail = require('@iiif/vault-helpers/thumbnail');
 const annotationTargets = require('@iiif/vault-helpers/annotation-targets');
 const contentState = require('@iiif/vault-helpers/content-state');
+const paintingAnnotations = require('@iiif/vault-helpers/painting-annotations');
 
 const vault = new Vault();
 
@@ -17,6 +18,7 @@ console.log(styles);
 console.log(thumbnail);
 console.log(annotationTargets);
 console.log(contentState);
+console.log(paintingAnnotations);
 
 const helper = thumbnail.createThumbnailHelper(vault);
 
