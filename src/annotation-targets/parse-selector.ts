@@ -272,7 +272,6 @@ function pathToPoints(normalizedPath: NormalizedSvgPathCommand[]): [number, numb
         out.push(startPoint!, [seg[1], seg[2]]);
         break;
       case 'C':
-        console.log('C', { startPoint, seg });
         out.push(
           ...flattenCubicBezier(
             { x: startPoint![0], y: startPoint![1] },
