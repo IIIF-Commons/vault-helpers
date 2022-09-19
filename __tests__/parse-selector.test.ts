@@ -1311,6 +1311,69 @@ describe('SVG Selectors', () => {
         value:
           '<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg"><g><polyline points="100,100 150,25 150,75 200,0" stroke="#000" fill="#fff"/></g></svg>',
       })
-    );
+    ).toMatchInlineSnapshot(`
+      {
+        "selector": {
+          "points": [
+            [
+              100,
+              100,
+            ],
+            [
+              150,
+              25,
+            ],
+            [
+              150,
+              75,
+            ],
+            [
+              200,
+              0,
+            ],
+          ],
+          "spatial": {
+            "height": 100,
+            "unit": "pixel",
+            "width": 100,
+            "x": 100,
+            "y": 0,
+          },
+          "svg": "<svg width=\\"800\\" height=\\"600\\" xmlns=\\"http://www.w3.org/2000/svg\\"><g><polyline points=\\"100,100 150,25 150,75 200,0\\" stroke=\\"#000\\" fill=\\"#fff\\"/></g></svg>",
+          "type": "SvgSelector",
+        },
+        "selectors": [
+          {
+            "points": [
+              [
+                100,
+                100,
+              ],
+              [
+                150,
+                25,
+              ],
+              [
+                150,
+                75,
+              ],
+              [
+                200,
+                0,
+              ],
+            ],
+            "spatial": {
+              "height": 100,
+              "unit": "pixel",
+              "width": 100,
+              "x": 100,
+              "y": 0,
+            },
+            "svg": "<svg width=\\"800\\" height=\\"600\\" xmlns=\\"http://www.w3.org/2000/svg\\"><g><polyline points=\\"100,100 150,25 150,75 200,0\\" stroke=\\"#000\\" fill=\\"#fff\\"/></g></svg>",
+            "type": "SvgSelector",
+          },
+        ],
+      }
+    `);
   });
 });
