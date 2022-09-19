@@ -120,7 +120,9 @@ export function parseSelector(source: Selector | Selector[], domParser?: DOMPars
     let points: [number, number][] = [];
     let rect: [number, number, number, number] | undefined;
     if (domParser) {
-      let svgElement: SVGElement | null = domParser.parseFromString(source.value, 'image/svg+xml').querySelector('svg');
+      const svgElement: SVGElement | null = domParser
+        .parseFromString(source.value, 'image/svg+xml')
+        .querySelector('svg');
       if (!svgElement) {
         console.warn(`Illegal SVG selector: ${source.value}`);
         return {
@@ -128,11 +130,6 @@ export function parseSelector(source: Selector | Selector[], domParser?: DOMPars
           selectors: [],
         };
       }
-      if (svgElement.firstElementChild?.tagName.toLowerCase() === 'g') {
-        // Check for top-level group
-        svgElement = svgElement.firstElementChild as SVGElement;
-      }
-      // TODO: SVG normalization
       points = elementToPoints(svgElement);
       if (points) {
         rect = [
@@ -166,6 +163,15 @@ export function parseSelector(source: Selector | Selector[], domParser?: DOMPars
 function elementToPoints(svgElem: SVGElement): [number, number][] {
   for (const pathElem of Array.from(svgElem.children)) {
     switch (pathElem?.tagName.toLowerCase()) {
+      case 'g':
+        {
+          // Check if any of the children in the container can be converted to points
+          const points = elementToPoints(pathElem as SVGElement);
+          if (points.length) {
+            return points;
+          }
+        }
+        continue;
       case 'path': {
         const p = pathElem.getAttribute('d');
         if (!p) {
