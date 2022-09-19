@@ -10,7 +10,10 @@ const BOX_SELECTOR =
 // Does not support 00:00:00 or 00:00 formats.
 const TEMPORAL_SELECTOR = /&?(t=)(npt:)?([0-9]+(.[0-9]+)?)?(,([0-9]+(.[0-9]+)?))?/;
 
-export function parseSelector(source: Selector | Selector[], domParser?: DOMParser): ParsedSelector {
+export function parseSelector(
+  source: Selector | Selector[],
+  { domParser }: { domParser?: DOMParser } = {}
+): ParsedSelector {
   if (Array.isArray(source)) {
     return (source as Array<string | Selector>).reduce(
       <ParseSelector>(data: ParsedSelector, nextSource: string | Selector) => {
