@@ -9,16 +9,20 @@
             grid-template-columns: auto auto;
         }
 
-        canvas {
-            margin: 0.3em;
+        .selector-container {
+          display: grid;
+          border: 1px solid black;
+        }
+
+        .selector-container canvas,
+        .selector-container svg {
+          grid-area: 1 / 1 / 1 / 1;
         }
     </style>
 </head>
 
 <body>
 <div class="container">
-    <div id="app"></div>
-    <pre id="data"></pre>
 </div>
 <script type="module">
   import { parseSelector } from '../src';
@@ -53,35 +57,40 @@
   };
 
   function append(element) {
-    document.getElementById("app").appendChild(element);
+    document.getElementsByClassName("container")[0].appendChild(element);
   }
 
   function renderSelector(selector, label) {
+    const container = document.createElement("div");
+    container.className = "selector-container";
     const parsed = parseSelector(selector).selector;
+    console.log(parsed);
+    const svgElem = new DOMParser().parseFromString(parsed.svg, 'image/svg+xml').rootElement;
+    for (const [key, value] of Object.entries(parsed.style ?? {})) {
+      svgElem.firstElementChild.style[key] = value;
+    }
+    container.appendChild(svgElem);
     const canvas = document.createElement('canvas');
+    container.appendChild(canvas);
     canvas.width = parsed.spatial.x + parsed.spatial.width + 8;
     canvas.height = parsed.spatial.y + parsed.spatial.height+ 8;
+    container.style.width = `${canvas.width}px`;
+    container.style.height = `${canvas.height}px`;
+    svgElem.style.width = `${canvas.width - 8}px`;
+    svgElem.style.height = `${canvas.height - 8}px`;
     const ctx = canvas.getContext('2d');
-    const svgImg = new Blob([parsed.svg], {type: 'image/svg+xml'});
-    const svgUrl = URL.createObjectURL(svgImg);
-    const imgElem = new Image();
-    imgElem.onload = function() {
-      ctx.drawImage(imgElem, 0, 0);
-      URL.revokeObjectURL(svgUrl);
-      for (const pt of parsed.points) {
-        ctx.beginPath();
-        ctx.fillStyle = 'red';
-        ctx.fillRect(pt[0] - 2, pt[1] - 2, 4, 4);
-        ctx.closePath();
-      }
+    for (const pt of parsed.points) {
       ctx.beginPath();
-      ctx.setLineDash([6]);
-      ctx.strokeStyle = 'green';
-      ctx.strokeRect(parsed.spatial.x, parsed.spatial.y, parsed.spatial.width, parsed.spatial.height);
+      ctx.fillStyle = 'red';
+      ctx.fillRect(pt[0] - 2, pt[1] - 2, 4, 4);
       ctx.closePath();
-    };
-    imgElem.src = svgUrl;
-    append(canvas);
+    }
+    ctx.beginPath();
+    ctx.setLineDash([6]);
+    ctx.strokeStyle = 'green';
+    ctx.strokeRect(parsed.spatial.x, parsed.spatial.y, parsed.spatial.width, parsed.spatial.height);
+    ctx.closePath();
+    append(container);
   }
 
   renderSelector(rect, 'Rectangle');
