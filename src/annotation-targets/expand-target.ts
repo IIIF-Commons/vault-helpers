@@ -6,6 +6,8 @@ export function expandTarget(
   target: W3CAnnotationTarget | W3CAnnotationTarget[],
   options: {
     typeMap?: Record<string, string>;
+    domParser?: DOMParser;
+    svgPreprocessor?: (svg: string) => string;
   } = {}
 ): SupportedTarget {
   if (Array.isArray(target)) {
@@ -58,7 +60,7 @@ export function expandTarget(
     }
 
     const { selector, selectors } = target.selector
-      ? parseSelector(target.selector)
+      ? parseSelector(target.selector, options)
       : { selector: null, selectors: [] };
 
     return {

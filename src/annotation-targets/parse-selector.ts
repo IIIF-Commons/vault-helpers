@@ -12,7 +12,7 @@ const TEMPORAL_SELECTOR = /&?(t=)(npt:)?([0-9]+(.[0-9]+)?)?(,([0-9]+(.[0-9]+)?))
 
 export function parseSelector(
   source: Selector | Selector[],
-  { domParser }: { domParser?: DOMParser } = {}
+  { domParser, svgPreprocessor }: { domParser?: DOMParser; svgPreprocessor?: (svg: string) => string } = {}
 ): ParsedSelector {
   if (Array.isArray(source)) {
     return (source as Array<string | Selector>).reduce(
@@ -123,7 +123,7 @@ export function parseSelector(
     let points: [number, number][] = [];
     let rect: [number, number, number, number] | undefined;
     let style: SelectorStyle | undefined;
-    let svg = source.value;
+    let svg = svgPreprocessor?.(source.value) ?? source.value;
     if (domParser) {
       const svgElement: SVGElement | null = domParser
         .parseFromString(source.value, 'image/svg+xml')
