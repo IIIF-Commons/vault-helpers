@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ParsedSelector, SupportedSelectors, TemporalSelector, SvgSelector } from './selector-types';
 import { Selector } from '@iiif/presentation-3';
-import { NormalizedSvgPathCommand, parseAndNormalizeSvgPath } from './normalize-svg';
+import { NormalizedSvgPathCommand, normalizeSvgViewBox, parseAndNormalizeSvgPath } from './normalize-svg';
 import { flattenCubicBezier, flattenQuadraticBezier } from './bezier';
 
 const BOX_SELECTOR =
@@ -122,6 +122,8 @@ export function parseSelector(
     }
     let points: [number, number][] = [];
     let rect: [number, number, number, number] | undefined;
+    let style: SelectorStyle | undefined;
+    let svg = source.value;
     if (domParser) {
       const svgElement: SVGElement | null = domParser
         .parseFromString(source.value, 'image/svg+xml')
@@ -133,20 +135,21 @@ export function parseSelector(
           selectors: [],
         };
       }
-      points = elementToPoints(svgElement);
-      if (points) {
+      const selectorElem = getSelectorElement(svgElement);
+      if (selectorElem) {
+        points = selectorElem.points;
         rect = [
           Math.min(...points.map((p) => p[0])), // llx
           Math.min(...points.map((p) => p[1])), // lly
           Math.max(...points.map((p) => p[0])), // urx
           Math.max(...points.map((p) => p[1])), // ury
         ];
+        svg = normalizeSvgViewBox(svgElement, rect[2], rect[3]);
       }
     }
-    // TODO: Style
     const sel: SvgSelector = {
       type: 'SvgSelector',
-      svg: source.value,
+      svg,
       points: points.length ? points : undefined,
       spatial: rect
         ? { unit: 'pixel', x: rect[0], y: rect[1], width: rect[2] - rect[0], height: rect[3] - rect[1] }
@@ -163,15 +166,20 @@ export function parseSelector(
   };
 }
 
-function elementToPoints(svgElem: SVGElement): [number, number][] {
+export type SelectorElement = {
+  element: SVGElement;
+  points: [number, number][];
+};
+
+function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
   for (const pathElem of Array.from(svgElem.children)) {
     switch (pathElem?.tagName.toLowerCase()) {
       case 'g':
         {
           // Check if any of the children in the container can be converted to points
-          const points = elementToPoints(pathElem as SVGElement);
-          if (points.length) {
-            return points;
+          const res = getSelectorElement(pathElem as SVGElement);
+          if (res) {
+            return res;
           }
         }
         continue;
@@ -181,7 +189,7 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
           continue;
         }
         const normalized = parseAndNormalizeSvgPath(p);
-        return pathToPoints(normalized);
+        return { element: pathElem as SVGElement, points: pathToPoints(normalized) };
       }
       case 'circle': {
         const cx = parseFloat(pathElem.getAttribute('cx') ?? '0');
@@ -196,7 +204,7 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
           const rad = (angle * Math.PI) / 180;
           points.push([cx + r * Math.cos(rad), cy + r * Math.sin(rad)]);
         }
-        return points;
+        return { element: pathElem as SVGElement, points };
       }
       case 'ellipse': {
         const cx = parseFloat(pathElem.getAttribute('cx') ?? '0');
@@ -213,7 +221,7 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
           const py = (ry * 2 * t) / (1 + t ** 2);
           points.push([cx + px, cy + py]);
         }
-        return points;
+        return { element: pathElem as SVGElement, points };
       }
       case 'line': {
         const x0 = parseFloat(pathElem.getAttribute('x0') ?? '0');
@@ -223,10 +231,13 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
         if (x0 === x1 && y0 === y1) {
           continue;
         }
-        return [
-          [x0, y0],
-          [x1, y1],
-        ];
+        return {
+          element: pathElem as SVGElement,
+          points: [
+            [x0, y0],
+            [x1, y1],
+          ],
+        };
       }
       case 'polygon':
       case 'polyline': {
@@ -242,7 +253,7 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
           // A polygon is a closed path, so the last point is the same as the first.
           points.push(points[0]);
         }
-        return points;
+        return { element: pathElem as SVGElement, points };
       }
       case 'rect': {
         const x = parseFloat(pathElem.getAttribute('x') ?? '0');
@@ -252,20 +263,23 @@ function elementToPoints(svgElem: SVGElement): [number, number][] {
         if (!width || !height) {
           continue;
         }
-        return [
-          [x, y],
-          [x + width, y],
-          [x + width, y + height],
-          [x, y + height],
-          [x, y],
-        ];
+        return {
+          element: pathElem as SVGElement,
+          points: [
+            [x, y],
+            [x + width, y],
+            [x + width, y + height],
+            [x, y + height],
+            [x, y],
+          ],
+        };
       }
       default:
         // Try next element
         continue;
     }
   }
-  return [];
+  return null;
 }
 
 function pathToPoints(normalizedPath: NormalizedSvgPathCommand[]): [number, number][] {
