@@ -174,29 +174,29 @@ export type SelectorElement = {
 };
 
 function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
-  for (const pathElem of Array.from(svgElem.children)) {
-    switch (pathElem?.tagName.toLowerCase()) {
+  for (const element of Array.from(svgElem.children) as SVGElement[]) {
+    switch (element?.tagName.toLowerCase()) {
       case 'g':
         {
           // Check if any of the children in the container can be converted to points
-          const res = getSelectorElement(pathElem as SVGElement);
+          const res = getSelectorElement(element as SVGElement);
           if (res) {
             return res;
           }
         }
         continue;
       case 'path': {
-        const p = pathElem.getAttribute('d');
+        const p = element.getAttribute('d');
         if (!p) {
           continue;
         }
         const normalized = parseAndNormalizeSvgPath(p);
-        return { element: pathElem as SVGElement, points: pathToPoints(normalized) };
+        return { element, points: pathToPoints(normalized) };
       }
       case 'circle': {
-        const cx = parseFloat(pathElem.getAttribute('cx') ?? '0');
-        const cy = parseFloat(pathElem.getAttribute('cy') ?? '0');
-        const r = parseFloat(pathElem.getAttribute('r') ?? '0');
+        const cx = parseFloat(element.getAttribute('cx') ?? '0');
+        const cy = parseFloat(element.getAttribute('cy') ?? '0');
+        const r = parseFloat(element.getAttribute('r') ?? '0');
         if (!r) {
           continue;
         }
@@ -206,13 +206,13 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
           const rad = (angle * Math.PI) / 180;
           points.push([cx + r * Math.cos(rad), cy + r * Math.sin(rad)]);
         }
-        return { element: pathElem as SVGElement, points };
+        return { element, points };
       }
       case 'ellipse': {
-        const cx = parseFloat(pathElem.getAttribute('cx') ?? '0');
-        const cy = parseFloat(pathElem.getAttribute('cy') ?? '0');
-        const rx = parseFloat(pathElem.getAttribute('rx') ?? '0');
-        const ry = parseFloat(pathElem.getAttribute('ry') ?? '0');
+        const cx = parseFloat(element.getAttribute('cx') ?? '0');
+        const cy = parseFloat(element.getAttribute('cy') ?? '0');
+        const rx = parseFloat(element.getAttribute('rx') ?? '0');
+        const ry = parseFloat(element.getAttribute('ry') ?? '0');
         if (!rx && !ry) {
           continue;
         }
@@ -223,18 +223,18 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
           const py = (ry * 2 * t) / (1 + t ** 2);
           points.push([cx + px, cy + py]);
         }
-        return { element: pathElem as SVGElement, points };
+        return { element, points };
       }
       case 'line': {
-        const x0 = parseFloat(pathElem.getAttribute('x0') ?? '0');
-        const y0 = parseFloat(pathElem.getAttribute('y0') ?? '0');
-        const x1 = parseFloat(pathElem.getAttribute('x1') ?? '0');
-        const y1 = parseFloat(pathElem.getAttribute('y1') ?? '0');
+        const x0 = parseFloat(element.getAttribute('x0') ?? '0');
+        const y0 = parseFloat(element.getAttribute('y0') ?? '0');
+        const x1 = parseFloat(element.getAttribute('x1') ?? '0');
+        const y1 = parseFloat(element.getAttribute('y1') ?? '0');
         if (x0 === x1 && y0 === y1) {
           continue;
         }
         return {
-          element: pathElem as SVGElement,
+          element,
           points: [
             [x0, y0],
             [x1, y1],
@@ -244,29 +244,29 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
       case 'polygon':
       case 'polyline': {
         const points =
-          pathElem
+          element
             .getAttribute('points')
             ?.split(' ')
             .map((ps) => ps.split(',').map(parseFloat) as [number, number]) ?? [];
         if (!points.length) {
           continue;
         }
-        if (pathElem.tagName === 'polygon') {
+        if (element.tagName === 'polygon') {
           // A polygon is a closed path, so the last point is the same as the first.
           points.push(points[0]);
         }
-        return { element: pathElem as SVGElement, points };
+        return { element, points };
       }
       case 'rect': {
-        const x = parseFloat(pathElem.getAttribute('x') ?? '0');
-        const y = parseFloat(pathElem.getAttribute('y') ?? '0');
-        const width = parseFloat(pathElem.getAttribute('width') ?? '0');
-        const height = parseFloat(pathElem.getAttribute('height') ?? '0');
+        const x = parseFloat(element.getAttribute('x') ?? '0');
+        const y = parseFloat(element.getAttribute('y') ?? '0');
+        const width = parseFloat(element.getAttribute('width') ?? '0');
+        const height = parseFloat(element.getAttribute('height') ?? '0');
         if (!width || !height) {
           continue;
         }
         return {
-          element: pathElem as SVGElement,
+          element,
           points: [
             [x, y],
             [x + width, y],
