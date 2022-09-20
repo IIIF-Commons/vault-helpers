@@ -1,7 +1,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ParsedSelector, SupportedSelectors, TemporalSelector, SvgSelector, SelectorStyle } from './selector-types';
+import {
+  ParsedSelector,
+  SupportedSelectors,
+  TemporalSelector,
+  SvgSelector,
+  SelectorStyle,
+  SvgShapeType,
+} from './selector-types';
 import { Selector } from '@iiif/presentation-3';
-import { NormalizedSvgPathCommand, normalizeSvgViewBox, parseAndNormalizeSvgPath } from './normalize-svg';
+import {
+  NormalizedSvgPathCommand,
+  NormalizedSvgPathCommandType,
+  normalizeSvgViewBox,
+  parseAndNormalizeSvgPath,
+} from './normalize-svg';
 import { flattenCubicBezier, flattenQuadraticBezier } from './bezier';
 
 const BOX_SELECTOR =
@@ -124,6 +136,7 @@ export function parseSelector(
     let rect: [number, number, number, number] | undefined;
     let style: SelectorStyle | undefined;
     let svg = svgPreprocessor?.(source.value) ?? source.value;
+    let svgShape: SvgShapeType | undefined;
     if (domParser) {
       const svgElement: SVGElement | null = domParser
         .parseFromString(source.value, 'image/svg+xml')
@@ -138,6 +151,7 @@ export function parseSelector(
       const selectorElem = getSelectorElement(svgElement);
       if (selectorElem) {
         points = selectorElem.points;
+        svgShape = selectorElem.shapeType;
         rect = [
           Math.min(...points.map((p) => p[0])), // llx
           Math.min(...points.map((p) => p[1])), // lly
@@ -151,6 +165,7 @@ export function parseSelector(
     const sel: SvgSelector = {
       type: 'SvgSelector',
       svg,
+      svgShape,
       style,
       points: points.length ? points : undefined,
       spatial: rect
@@ -171,7 +186,42 @@ export function parseSelector(
 export type SelectorElement = {
   element: SVGElement;
   points: [number, number][];
+  shapeType: SvgShapeType;
 };
+
+function getShapeTypeFromPath(svgPath: NormalizedSvgPathCommand[]): SvgShapeType {
+  const cmdFrequencies = svgPath
+    .map((seg) => seg[0])
+    .reduce(
+      (acc: Record<NormalizedSvgPathCommandType, number>, cmd) => {
+        acc[cmd] += 1;
+        return acc;
+      },
+      { C: 0, Q: 0, L: 0, M: 0 }
+    );
+  const cmdTypes = new Set(svgPath.map((seg) => seg[0]));
+  if (cmdFrequencies.C > 0 || cmdFrequencies.Q > 0) {
+    return 'path';
+  }
+  if (cmdFrequencies.L > 0 && (cmdTypes.size === 1 || (cmdTypes.size === 2 && cmdTypes.has('M')))) {
+    // Only lines and moves: rectangle, polygon or polyline?
+    if (cmdFrequencies.L === 4) {
+      return 'rect';
+    }
+
+    // Check if the path is closed to decide if we have a polygon or a polyline
+    const lastSeg = svgPath.slice(-1)[0];
+    if (
+      (svgPath[0][0] === 'M' && lastSeg[0] === 'L' && lastSeg[1] == svgPath[0][1] && lastSeg[2] === svgPath[0][2]) ||
+      (lastSeg[1] === 0 && lastSeg[2] === 0)
+    ) {
+      return 'polygon';
+    } else {
+      return 'polyline';
+    }
+  }
+  return 'path';
+}
 
 function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
   for (const element of Array.from(svgElem.children) as SVGElement[]) {
@@ -191,7 +241,7 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
           continue;
         }
         const normalized = parseAndNormalizeSvgPath(p);
-        return { element, points: pathToPoints(normalized) };
+        return { element, points: pathToPoints(normalized), shapeType: getShapeTypeFromPath(normalized) };
       }
       case 'circle': {
         const cx = parseFloat(element.getAttribute('cx') ?? '0');
@@ -206,7 +256,7 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
           const rad = (angle * Math.PI) / 180;
           points.push([cx + r * Math.cos(rad), cy + r * Math.sin(rad)]);
         }
-        return { element, points };
+        return { element, points, shapeType: 'circle' };
       }
       case 'ellipse': {
         const cx = parseFloat(element.getAttribute('cx') ?? '0');
@@ -223,7 +273,7 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
           const py = (ry * 2 * t) / (1 + t ** 2);
           points.push([cx + px, cy + py]);
         }
-        return { element, points };
+        return { element, points, shapeType: 'ellipse' };
       }
       case 'line': {
         const x0 = parseFloat(element.getAttribute('x0') ?? '0');
@@ -239,6 +289,7 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
             [x0, y0],
             [x1, y1],
           ],
+          shapeType: 'polyline',
         };
       }
       case 'polygon':
@@ -251,11 +302,13 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
         if (!points.length) {
           continue;
         }
-        if (element.tagName === 'polygon') {
+        let shapeType: SvgShapeType = 'polyline';
+        if (element.tagName.toLowerCase() === 'polygon') {
           // A polygon is a closed path, so the last point is the same as the first.
           points.push(points[0]);
+          shapeType = 'polygon';
         }
-        return { element, points };
+        return { element, points, shapeType };
       }
       case 'rect': {
         const x = parseFloat(element.getAttribute('x') ?? '0');
@@ -274,6 +327,7 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
             [x, y + height],
             [x, y],
           ],
+          shapeType: 'rect',
         };
       }
       default:

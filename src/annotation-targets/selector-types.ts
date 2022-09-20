@@ -1,3 +1,4 @@
+export type SvgShapeType = 'rect' | 'circle' | 'ellipse' | 'line' | 'polyline' | 'polygon' | 'path';
 export interface SupportedSelector {
   type: string;
   temporal?: {
@@ -13,6 +14,7 @@ export interface SupportedSelector {
   };
   points?: [number, number][];
   svg?: string;
+  svgShape?: SvgShapeType;
   style?: SelectorStyle;
 }
 
@@ -45,6 +47,7 @@ export interface PointSelector extends SupportedSelector {
 export interface SvgSelector extends SupportedSelector {
   type: 'SvgSelector';
   svg: string;
+  svgShape?: SvgShapeType;
   points?: [number, number][];
   spatial?: {
     unit: 'pixel';

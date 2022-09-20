@@ -46,6 +46,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 400 400\\"><g><rect x=\\"100\\" y=\\"100\\" width=\\"300\\" height=\\"300\\"></rect></g></svg>",
+          "svgShape": "rect",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -84,6 +85,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 400 400\\"><g><rect x=\\"100\\" y=\\"100\\" width=\\"300\\" height=\\"300\\"></rect></g></svg>",
+            "svgShape": "rect",
             "type": "SvgSelector",
           },
         ],
@@ -239,6 +241,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 373 346.5253095668203\\"><g><circle r=\\"147.5\\" cy=\\"199.83333\\" cx=\\"225.5\\"></circle></g></svg>",
+          "svgShape": "circle",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -381,6 +384,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 373 346.5253095668203\\"><g><circle r=\\"147.5\\" cy=\\"199.83333\\" cx=\\"225.5\\"></circle></g></svg>",
+            "svgShape": "circle",
             "type": "SvgSelector",
           },
         ],
@@ -536,6 +540,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 746 109.16076970410062\\"><g><ellipse ry=\\"31.5\\" rx=\\"346.5\\" id=\\"svg_2\\" cy=\\"77.83333\\" cx=\\"399.5\\"></ellipse></g></svg>",
+          "svgShape": "ellipse",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -678,6 +683,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 746 109.16076970410062\\"><g><ellipse ry=\\"31.5\\" rx=\\"346.5\\" id=\\"svg_2\\" cy=\\"77.83333\\" cx=\\"399.5\\"></ellipse></g></svg>",
+            "svgShape": "ellipse",
             "type": "SvgSelector",
           },
         ],
@@ -885,6 +891,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200.00001 190.33333\\"><g><path d=\\"m200.00001,83.33333c-270.12536,222.67568 -108.78352,-65.06757 -80.05978,107\\"></path></g></svg>",
+          "svgShape": "path",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -1079,6 +1086,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200.00001 190.33333\\"><g><path d=\\"m200.00001,83.33333c-270.12536,222.67568 -108.78352,-65.06757 -80.05978,107\\"></path></g></svg>",
+            "svgShape": "path",
             "type": "SvgSelector",
           },
         ],
@@ -1178,6 +1186,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200.00001 180.3498623484449\\"><g><path d=\\"m200.00001,83.33333 q -270.12536,222.67568 -108.78352,-65.06757\\"></path></g></svg>",
+          "svgShape": "path",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -1264,6 +1273,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200.00001 180.3498623484449\\"><g><path d=\\"m200.00001,83.33333 q -270.12536,222.67568 -108.78352,-65.06757\\"></path></g></svg>",
+            "svgShape": "path",
             "type": "SvgSelector",
           },
         ],
@@ -1298,6 +1308,10 @@ describe('SVG Selectors', () => {
               200,
               0,
             ],
+            [
+              100,
+              100,
+            ],
           ],
           "spatial": {
             "height": 100,
@@ -1311,6 +1325,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200 100\\"><g><polygon points=\\"100,100 150,25 150,75 200,0\\"></polygon></g></svg>",
+          "svgShape": "polygon",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -1332,6 +1347,10 @@ describe('SVG Selectors', () => {
                 200,
                 0,
               ],
+              [
+                100,
+                100,
+              ],
             ],
             "spatial": {
               "height": 100,
@@ -1345,6 +1364,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200 100\\"><g><polygon points=\\"100,100 150,25 150,75 200,0\\"></polygon></g></svg>",
+            "svgShape": "polygon",
             "type": "SvgSelector",
           },
         ],
@@ -1392,6 +1412,7 @@ describe('SVG Selectors', () => {
             "stroke": "#000",
           },
           "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200 100\\"><g><polyline points=\\"100,100 150,25 150,75 200,0\\"></polyline></g></svg>",
+          "svgShape": "polyline",
           "type": "SvgSelector",
         },
         "selectors": [
@@ -1426,6 +1447,7 @@ describe('SVG Selectors', () => {
               "stroke": "#000",
             },
             "svg": "<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 200 100\\"><g><polyline points=\\"100,100 150,25 150,75 200,0\\"></polyline></g></svg>",
+            "svgShape": "polyline",
             "type": "SvgSelector",
           },
         ],

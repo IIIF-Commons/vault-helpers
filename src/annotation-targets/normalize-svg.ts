@@ -14,6 +14,8 @@ export type NormalizedSvgPathCommand =
   | AbsoluteCubicBezierCommand
   | AbsoluteQuadraticBezierCommand;
 
+export type NormalizedSvgPathCommandType = 'M' | 'L' | 'C' | 'Q';
+
 /** Parse an SVG path and normalize it so it only contains Moves, Lines and Cubic or Quadratic Bézier curves
  *  in their absolute form. */
 export function parseAndNormalizeSvgPath(path: string): NormalizedSvgPathCommand[] {
