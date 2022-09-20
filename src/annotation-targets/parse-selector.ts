@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ParsedSelector, SupportedSelectors, TemporalSelector, SvgSelector } from './selector-types';
+import { ParsedSelector, SupportedSelectors, TemporalSelector, SvgSelector, SelectorStyle } from './selector-types';
 import { Selector } from '@iiif/presentation-3';
 import { NormalizedSvgPathCommand, normalizeSvgViewBox, parseAndNormalizeSvgPath } from './normalize-svg';
 import { flattenCubicBezier, flattenQuadraticBezier } from './bezier';
@@ -144,12 +144,14 @@ export function parseSelector(
           Math.max(...points.map((p) => p[0])), // urx
           Math.max(...points.map((p) => p[1])), // ury
         ];
+        ({ style, svg } = extractStyles(selectorElem.element) ?? { svg });
         svg = normalizeSvgViewBox(svgElement, rect[2], rect[3]);
       }
     }
     const sel: SvgSelector = {
       type: 'SvgSelector',
       svg,
+      style,
       points: points.length ? points : undefined,
       spatial: rect
         ? { unit: 'pixel', x: rect[0], y: rect[1], width: rect[2] - rect[0], height: rect[3] - rect[1] }
@@ -316,4 +318,44 @@ function pathToPoints(normalizedPath: NormalizedSvgPathCommand[]): [number, numb
     }
   }
   return out;
+}
+function extractStyles(selectorElement: SVGElement): { style?: SelectorStyle; svg: string } | undefined {
+  let { fill, stroke, strokeWidth, strokeDasharray } = selectorElement.style;
+  if (selectorElement.hasAttribute('fill')) {
+    fill = selectorElement.getAttribute('fill')!;
+    selectorElement.removeAttribute('fill');
+  }
+  if (selectorElement.hasAttribute('stroke')) {
+    stroke = selectorElement.getAttribute('stroke')!;
+    selectorElement.removeAttribute('stroke');
+  }
+  if (selectorElement.hasAttribute('stroke-width')) {
+    strokeWidth = selectorElement.getAttribute('stroke-width')!;
+    selectorElement.removeAttribute('stroke-width');
+  }
+  if (selectorElement.hasAttribute('stroke-dasharray')) {
+    strokeDasharray = selectorElement.getAttribute('stroke-dasharray')!;
+    selectorElement.removeAttribute('stroke-dasharray');
+  }
+  const style: SelectorStyle = {};
+  if (fill.length) {
+    style.fill = fill;
+  }
+  if (stroke.length) {
+    style.stroke = stroke;
+  }
+  if (strokeWidth.length) {
+    style.strokeWidth = strokeWidth;
+  }
+  if (strokeDasharray.length) {
+    style.strokeDasharray = strokeDasharray;
+  }
+  let rootElem: SVGElement | null = selectorElement;
+  while (rootElem.tagName.toLowerCase() !== 'svg') {
+    rootElem = rootElem.parentElement as SVGElement | null;
+    if (rootElem === null) {
+      throw new Error('Could not find root SVG element');
+    }
+  }
+  return { svg: rootElem.outerHTML, style: Object.values(style).find((v) => v !== undefined) ? style : undefined };
 }

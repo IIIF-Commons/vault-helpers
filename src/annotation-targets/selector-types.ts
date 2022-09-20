@@ -13,11 +13,14 @@ export interface SupportedSelector {
   };
   points?: [number, number][];
   svg?: string;
-  style?: {
-    fill?: string;
-    stroke?: string;
-    strokeWidth?: number;
-  };
+  style?: SelectorStyle;
+}
+
+export interface SelectorStyle {
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: string;
+  strokeDasharray?: string;
 }
 
 export interface BoxSelector extends SupportedSelector {
