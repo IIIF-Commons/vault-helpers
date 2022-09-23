@@ -22,6 +22,8 @@ const BOX_SELECTOR =
 // Does not support 00:00:00 or 00:00 formats.
 const TEMPORAL_SELECTOR = /&?(t=)(npt:)?([0-9]+(.[0-9]+)?)?(,([0-9]+(.[0-9]+)?))?/;
 
+const RGBA_COLOR = /^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/;
+
 export function parseSelector(
   source: Selector | Selector[],
   { domParser, svgPreprocessor }: { domParser?: DOMParser; svgPreprocessor?: (svg: string) => string } = {}
@@ -373,37 +375,68 @@ function pathToPoints(normalizedPath: NormalizedSvgPathCommand[]): [number, numb
   }
   return out;
 }
+
+/** Extract styling information from SVG selector.
+ *
+ * Will remove all styling information from the SVG element
+ * and normalize `rgba` colors for `fill` and `stroke` to
+ * `rgb` and store the opacity in `fillOpacity` and `strokeOpacity`.
+ */
 function extractStyles(selectorElement: SVGElement): { style?: SelectorStyle; svg: string } | undefined {
-  let { fill, stroke, strokeWidth, strokeDasharray } = selectorElement.style;
+  // TODO: Can this be simplified somehow?
+  const style: SelectorStyle = {};
   if (selectorElement.hasAttribute('fill')) {
-    fill = selectorElement.getAttribute('fill')!;
+    style.fill = selectorElement.getAttribute('fill')!;
     selectorElement.removeAttribute('fill');
+  } else if (selectorElement.style.fill) {
+    style.fill = selectorElement.style.fill;
   }
+  if (style.fill) {
+    const rgbaMatch = RGBA_COLOR.exec(style.fill);
+    if (rgbaMatch) {
+      style.fillOpacity = parseFloat(rgbaMatch[4]);
+      style.fill = `rgb(${rgbaMatch[1]}, ${rgbaMatch[2]}, ${rgbaMatch[3]})`;
+    }
+  }
+  if (selectorElement.hasAttribute('fill-opacity')) {
+    style.fillOpacity = parseFloat(selectorElement.getAttribute('fill-opacity')!);
+    selectorElement.removeAttribute('fill-opacity');
+  } else if (selectorElement.style.fillOpacity) {
+    style.fillOpacity = parseFloat(selectorElement.style.fillOpacity);
+  }
+
   if (selectorElement.hasAttribute('stroke')) {
-    stroke = selectorElement.getAttribute('stroke')!;
-    selectorElement.removeAttribute('stroke');
+    style.stroke = selectorElement.getAttribute('stroke')!;
+    selectorElement.removeAttribute('fill');
+  } else if (selectorElement.style.stroke) {
+    style.stroke = selectorElement.style.stroke;
+  }
+  if (style.stroke) {
+    const rgbaMatch = RGBA_COLOR.exec(style.stroke);
+    if (rgbaMatch) {
+      style.strokeOpacity = parseFloat(rgbaMatch[4]);
+      style.stroke = `rgb(${rgbaMatch[1]}, ${rgbaMatch[2]}, ${rgbaMatch[3]})`;
+    }
+  }
+  if (selectorElement.hasAttribute('stroke-opacity')) {
+    style.strokeOpacity = parseFloat(selectorElement.getAttribute('stroke-opacity')!);
+    selectorElement.removeAttribute('stroke-opacity');
+  } else if (selectorElement.style.strokeOpacity) {
+    style.strokeOpacity = parseFloat(selectorElement.style.strokeOpacity);
   }
   if (selectorElement.hasAttribute('stroke-width')) {
-    strokeWidth = selectorElement.getAttribute('stroke-width')!;
+    style.strokeWidth = selectorElement.getAttribute('stroke-width')!;
     selectorElement.removeAttribute('stroke-width');
+  } else if (selectorElement.style.strokeWidth) {
+    style.strokeWidth = selectorElement.style.strokeWidth;
   }
   if (selectorElement.hasAttribute('stroke-dasharray')) {
-    strokeDasharray = selectorElement.getAttribute('stroke-dasharray')!;
+    style.strokeDasharray = selectorElement.getAttribute('stroke-dasharray')!;
     selectorElement.removeAttribute('stroke-dasharray');
+  } else if (selectorElement.style.strokeDasharray) {
+    style.strokeDasharray = selectorElement.style.strokeDasharray;
   }
-  const style: SelectorStyle = {};
-  if (fill.length) {
-    style.fill = fill;
-  }
-  if (stroke.length) {
-    style.stroke = stroke;
-  }
-  if (strokeWidth.length) {
-    style.strokeWidth = strokeWidth;
-  }
-  if (strokeDasharray.length) {
-    style.strokeDasharray = strokeDasharray;
-  }
+
   let rootElem: SVGElement | null = selectorElement;
   while (rootElem.tagName.toLowerCase() !== 'svg') {
     rootElem = rootElem.parentElement as SVGElement | null;
@@ -411,5 +444,5 @@ function extractStyles(selectorElement: SVGElement): { style?: SelectorStyle; sv
       throw new Error('Could not find root SVG element');
     }
   }
-  return { svg: rootElem.outerHTML, style: Object.values(style).find((v) => v !== undefined) ? style : undefined };
+  return { svg: rootElem.outerHTML, style: Object.keys(style).length > 0 ? style : undefined };
 }

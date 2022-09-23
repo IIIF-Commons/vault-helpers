@@ -20,7 +20,9 @@ export interface SupportedSelector {
 
 export interface SelectorStyle {
   fill?: string;
+  fillOpacity?: number;
   stroke?: string;
+  strokeOpacity?: number;
   strokeWidth?: string;
   strokeDasharray?: string;
 }
