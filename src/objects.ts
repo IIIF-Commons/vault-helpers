@@ -102,11 +102,14 @@ export function wrapObject(object: any, vault: Vault): any {
 
 export function createObjectsHelper(vault: Vault) {
   return {
-    async createManifest(id: string): Promise<Manifest> {
-      return wrapObject(await vault.loadManifest(id), vault);
+    async load(id: string | Reference<any>, json?: any): Promise<Manifest> {
+      return wrapObject(await vault.load(id, json), vault);
     },
-    async createCollection(id: string) {
-      return wrapObject(await vault.loadCollection(id), vault);
+    async loadManifest(id: string | Reference<any>, json?: any): Promise<Manifest> {
+      return wrapObject(await vault.loadManifest(id, json), vault);
+    },
+    async loadCollection(id: string | Reference<any>, json?: any) {
+      return wrapObject(await vault.loadCollection(id, json), vault);
     },
     wrapObject<T>(objectType: Reference<T>) {
       return wrapObject(vault.get(objectType, { skipSelfReturn: false }), vault);
