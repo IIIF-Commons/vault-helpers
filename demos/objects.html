@@ -1,0 +1,37 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vault Helpers | Objects</title>
+</head>
+<body>
+
+<pre id="json"></pre>
+
+<script type="module">
+  import { Vault } from '@iiif/vault';
+  import { createObjectsHelper } from '../src/objects';
+
+  const vault = new Vault();
+
+  const objects = createObjectsHelper(vault);
+
+  const manifest = await objects.createManifest('https://digirati-co-uk.github.io/wunder.json');
+
+  console.log(manifest );
+
+  document.getElementById('json').innerText = JSON.stringify(manifest, null, 2);
+
+  manifest.subscribe(() => {
+    console.log('manifest changed!');
+  })
+
+  vault.modifyEntityField(manifest, 'label', { en: ['testing'] });
+
+
+</script>
+
+</body>
+</html>
