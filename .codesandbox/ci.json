@@ -1,6 +1,7 @@
 {
   "sandboxes": [
-    "new"
+    "new",
+    "vanilla"
   ],
   "node": "16"
 }
