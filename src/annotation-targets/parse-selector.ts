@@ -342,35 +342,37 @@ function getSelectorElement(svgElem: SVGElement): SelectorElement | null {
 
 function pathToPoints(normalizedPath: NormalizedSvgPathCommand[]): [number, number][] {
   const out: [number, number][] = [];
-  let startPoint: [number, number] | undefined;
   for (let i = 0; i < normalizedPath.length; i++) {
+    const startPoint = out[out.length - 1] ?? [0, 0];
     const seg = normalizedPath[i];
     switch (seg[0]) {
       case 'M':
-        startPoint = [seg[1], seg[2]];
-        continue;
       case 'L':
-        out.push(startPoint!, [seg[1], seg[2]]);
-        break;
+        out.push([seg[1], seg[2]]);
+        continue;
       case 'C':
         out.push(
           ...flattenCubicBezier(
-            { x: startPoint![0], y: startPoint![1] },
+            { x: startPoint[0], y: startPoint[1] },
             { x: seg[1], y: seg[2] },
             { x: seg[3], y: seg[4] },
             { x: seg[5], y: seg[6] }
-          ).map((p) => [p.x, p.y] as [number, number])
+          )
+            .map((p) => [p.x, p.y] as [number, number])
+            .slice(1) // skip first point, already part of output
         );
-        break;
+        continue;
       case 'Q':
         out.push(
           ...flattenQuadraticBezier(
-            { x: startPoint![0], y: startPoint![1] },
+            { x: startPoint[0], y: startPoint[1] },
             { x: seg[1], y: seg[2] },
             { x: seg[3], y: seg[4] }
-          ).map((p) => [p.x, p.y] as [number, number])
+          )
+            .map((p) => [p.x, p.y] as [number, number])
+            .slice(1) // skip first point, already part of output
         );
-        break;
+        continue;
     }
   }
   return out;
@@ -407,7 +409,7 @@ function extractStyles(selectorElement: SVGElement): { style?: SelectorStyle; sv
 
   if (selectorElement.hasAttribute('stroke')) {
     style.stroke = selectorElement.getAttribute('stroke')!;
-    selectorElement.removeAttribute('fill');
+    selectorElement.removeAttribute('stroke');
   } else if (selectorElement.style.stroke) {
     style.stroke = selectorElement.style.stroke;
   }
