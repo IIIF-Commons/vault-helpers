@@ -8,12 +8,7 @@ import {
   SvgShapeType,
 } from './selector-types';
 import { Selector } from '@iiif/presentation-3';
-import {
-  NormalizedSvgPathCommand,
-  NormalizedSvgPathCommandType,
-  normalizeSvgViewBox,
-  parseAndNormalizeSvgPath,
-} from './normalize-svg';
+import { NormalizedSvgPathCommand, NormalizedSvgPathCommandType, parseAndNormalizeSvgPath } from './normalize-svg';
 import { flattenCubicBezier, flattenQuadraticBezier } from './bezier';
 
 const BOX_SELECTOR =
@@ -161,7 +156,6 @@ export function parseSelector(
           Math.max(...points.map((p) => p[1])), // ury
         ];
         ({ style, svg } = extractStyles(selectorElem.element) ?? { svg });
-        svg = normalizeSvgViewBox(svgElement, rect[2], rect[3]);
       }
     }
     const sel: SvgSelector = {

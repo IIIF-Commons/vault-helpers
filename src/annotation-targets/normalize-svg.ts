@@ -117,10 +117,3 @@ export function parseAndNormalizeSvgPath(path: string): NormalizedSvgPathCommand
 
   return out;
 }
-
-export function normalizeSvgViewBox(svgElement: SVGElement, width: number, height: number): string {
-  svgElement.removeAttribute('width');
-  svgElement.removeAttribute('height');
-  svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
-  return svgElement.outerHTML;
-}
