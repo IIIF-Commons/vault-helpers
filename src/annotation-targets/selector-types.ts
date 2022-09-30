@@ -1,3 +1,4 @@
+export type SvgShapeType = 'rect' | 'circle' | 'ellipse' | 'line' | 'polyline' | 'polygon' | 'path';
 export interface SupportedSelector {
   type: string;
   temporal?: {
@@ -11,6 +12,19 @@ export interface SupportedSelector {
     width?: number;
     height?: number;
   };
+  points?: [number, number][];
+  svg?: string;
+  svgShape?: SvgShapeType;
+  style?: SelectorStyle;
+}
+
+export interface SelectorStyle {
+  fill?: string;
+  fillOpacity?: number;
+  stroke?: string;
+  strokeOpacity?: number;
+  strokeWidth?: string;
+  strokeDasharray?: string;
 }
 
 export interface BoxSelector extends SupportedSelector {
@@ -29,6 +43,20 @@ export interface PointSelector extends SupportedSelector {
   spatial: {
     x: number;
     y: number;
+  };
+}
+
+export interface SvgSelector extends SupportedSelector {
+  type: 'SvgSelector';
+  svg: string;
+  svgShape?: SvgShapeType;
+  points?: [number, number][];
+  spatial?: {
+    unit: 'pixel';
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   };
 }
 
@@ -55,7 +83,7 @@ export interface TemporalBoxSelector extends SupportedSelector {
   };
 }
 
-export type SupportedSelectors = TemporalSelector | BoxSelector | TemporalBoxSelector | PointSelector;
+export type SupportedSelectors = TemporalSelector | BoxSelector | TemporalBoxSelector | PointSelector | SvgSelector;
 
 export type ParsedSelector = {
   selector: SupportedSelectors | null;
