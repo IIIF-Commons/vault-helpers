@@ -1,6 +1,8 @@
 {
   "sandboxes": [
-    "new"
+    "new",
+    "vanilla",
+    "vault-objects-demo-q07ig6"
   ],
   "node": "16"
 }

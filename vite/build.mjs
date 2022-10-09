@@ -10,7 +10,8 @@ import chalk from 'chalk';
     'thumbnail',
     'annotation-targets',
     'content-state',
-    'painting-annotations'
+    'painting-annotations',
+    'objects'
   ];
 
   // Main UMD build.
