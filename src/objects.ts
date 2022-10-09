@@ -1,6 +1,5 @@
 import { Vault } from '@iiif/vault';
-import { Manifest } from '@iiif/presentation-3';
-import { Reference } from '@iiif/presentation-3/reference';
+import { Manifest, Reference } from '@iiif/presentation-3';
 
 function defineProperty(name: string, prototype: any, vault: Vault) {
   prototype[DEFINED] = prototype[DEFINED] || [];
