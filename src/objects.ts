@@ -215,5 +215,8 @@ export function createObjectsHelper(vault: Vault) {
     wrapObject<T>(objectType: Reference<T>) {
       return wrapObject(vault.get(objectType, { skipSelfReturn: false }), vault);
     },
+    isWrapped(object: any) {
+      return !!object[DEFINED];
+    },
   };
 }
