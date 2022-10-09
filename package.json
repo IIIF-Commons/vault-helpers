@@ -47,6 +47,10 @@
     "./painting-annotations": {
       "require": "./dist/painting-annotations/cjs/painting-annotations.js",
       "import": "./dist/painting-annotations/esm/painting-annotations.mjs"
+    },
+    "./objects": {
+      "require": "./dist/objects/cjs/objects.js",
+      "import": "./dist/objects/esm/objects.mjs"
     }
   },
   "typesVersions": {
@@ -77,6 +81,9 @@
       ],
       "painting-annotations": [
         ".build/types/painting-annotations.d.ts"
+      ],
+      "objects": [
+        ".build/types/objects.d.ts"
       ]
     }
   },
