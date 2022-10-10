@@ -76,6 +76,7 @@
     canvas.height = parsed.spatial.y + parsed.spatial.height+ 8;
     container.style.width = `${canvas.width}px`;
     container.style.height = `${canvas.height}px`;
+    svgElem.removeAttribute('viewBox');
     svgElem.style.width = `${canvas.width - 8}px`;
     svgElem.style.height = `${canvas.height - 8}px`;
     const ctx = canvas.getContext('2d');
