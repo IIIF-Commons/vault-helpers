@@ -1,4 +1,4 @@
 label: Vault helpers
 link:
   type: generated-index
-  description: Helper library for IIIF Vault
+  description: Helper library for @iiif/vault
