@@ -22,7 +22,7 @@ List of existing, or planned helpers.
 Some useful helpers for parsing language maps.
 
 ```ts
-import { getValue } from '@iiif/vault-helpers/styles';
+import { getValue } from '@iiif/vault-helpers/i18n';
 
 // Simple utility.
 const str1 = getValue(manifest.label); // based on browser
@@ -39,7 +39,6 @@ const str2 = buildLocaleString(
     strictFallback: true,
   }
 );
-
 ```
 
 
