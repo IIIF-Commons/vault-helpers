@@ -11,7 +11,9 @@ import chalk from 'chalk';
     'annotation-targets',
     'content-state',
     'painting-annotations',
-    'objects'
+    'objects',
+    'ranges',
+    'sequences',
   ];
 
   // Main UMD build.

@@ -51,6 +51,14 @@
     "./objects": {
       "require": "./dist/objects/cjs/objects.js",
       "import": "./dist/objects/esm/objects.mjs"
+    },
+    "./ranges": {
+      "require": "./dist/ranges/cjs/ranges.js",
+      "import": "./dist/ranges/esm/ranges.mjs"
+    },
+    "./sequences": {
+      "require": "./dist/sequences/cjs/sequences.js",
+      "import": "./dist/sequences/esm/sequences.mjs"
     }
   },
   "typesVersions": {
@@ -84,6 +92,12 @@
       ],
       "objects": [
         ".build/types/objects.d.ts"
+      ],
+      "ranges": [
+        ".build/types/ranges.d.ts"
+      ],
+      "sequences": [
+        ".build/types/sequences.d.ts"
       ]
     }
   },

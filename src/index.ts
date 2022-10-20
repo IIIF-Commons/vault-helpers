@@ -6,3 +6,5 @@ export * from './content-state';
 export * from './annotation-targets';
 export * from './painting-annotations';
 export * from './objects';
+export * from './ranges';
+export * from './sequences';
