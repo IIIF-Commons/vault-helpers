@@ -62,7 +62,7 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
       | CanvasNormalized
       | AnnotationNormalized
       | AnnotationPageNormalized
-      | ContentResource = vault.get(input as any) as any;
+      | ContentResource = vault.get(input as any, { skipSelfReturn: false }) as any;
 
     if (typeof fullInput === 'string') {
       return { best: getFixedSizeFromImage(fullInput as any), fallback: [], log: [] };

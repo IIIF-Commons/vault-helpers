@@ -137,6 +137,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "happy-dom": "^6.0.3",
     "jsdom": "^20.0.0",
+    "node-fetch": "3.3.0",
     "prettier": "^2.5.1",
     "react": "17.0.2",
     "react-i18next": "^11.18.0",

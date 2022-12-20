@@ -1,0 +1,66 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/image_service2/manifest.json",
+  "@type": "sc:Manifest",
+  "label": "No thumb property",
+  "sequences": [
+    {
+      "@type": "sc:Sequence",
+      "label": "Default to page order",
+      "canvases": [
+        {
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/image_service2/canvas/1",
+          "@type": "sc:Canvas",
+          "label": "Image 1",
+          "height": 4032,
+          "width": 3024,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "https://iiif.io/api/image/2.1/example/reference/918ecd18c2592080851777620de9bcb5-fountain/full/full/0/default.jpg",
+                "@type": "dcTypes:Image",
+                "format": "image/jpeg",
+                "height": 4032,
+                "width": 3024,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://iiif.io/api/image/2.1/example/reference/918ecd18c2592080851777620de9bcb5-fountain",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/image_service2/canvas/1"
+            }
+          ]
+        },
+        {
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/image_service2/canvas/2",
+          "@type": "sc:Canvas",
+          "label": "Image 2",
+          "height": 4032,
+          "width": 3024,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "https://iiif.io/api/image/2.1/example/reference/918ecd18c2592080851777620de9bcb5-gottingen/full/full/0/default.jpg",
+                "@type": "dcTypes:Image",
+                "format": "image/jpeg",
+                "height": 4032,
+                "width": 3024,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://iiif.io/api/image/2.1/example/reference/918ecd18c2592080851777620de9bcb5-gottingen",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/image_service2/canvas/2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

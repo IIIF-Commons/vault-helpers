@@ -1,0 +1,56 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/simple_image/manifest.json",
+  "@type": "sc:Manifest",
+  "label": "No thumb property - level 0",
+  "sequences": [
+    {
+      "@type": "sc:Sequence",
+      "label": "Default to page order",
+      "canvases": [
+        {
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/simple_image/canvas/1",
+          "@type": "sc:Canvas",
+          "label": "Fountain",
+          "height": 4032,
+          "width": 3024,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "https://fixtures.iiif.io/images/Glen/photos/fountain.jpg",
+                "@type": "dcTypes:Image",
+                "format": "image/jpeg",
+                "height": 4032,
+                "width": 3024
+              },
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/simple_image/canvas/1"
+            }
+          ]
+        },
+        {
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/simple_image/canvas/2",
+          "@type": "Square",
+          "label": "Image 2",
+          "height": 3024,
+          "width": 4032,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "https://fixtures.iiif.io/images/Glen/photos/gottingen.jpg",
+                "@type": "dcTypes:Image",
+                "format": "image/jpeg",
+                "height": 3024,
+                "width": 4032
+              },
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/no_thum_prop/v2/simple_image/canvas/2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
