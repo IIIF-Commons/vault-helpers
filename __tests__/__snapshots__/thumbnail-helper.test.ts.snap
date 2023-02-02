@@ -32,7 +32,7 @@ exports[`Thumbnail helper > Thumbnail - Canvas with no thumbnail property - leve
   {
     "best": {
       "height": 189,
-      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/no_thum_prop/v2/level0/tractor/full/252,189/0/default.jpg",
+      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/no_thum_prop/v2/level0/tractor/full/252,/0/default.jpg",
       "type": "fixed",
       "unsafe": false,
       "width": 252,
@@ -43,7 +43,7 @@ exports[`Thumbnail helper > Thumbnail - Canvas with no thumbnail property - leve
   {
     "best": {
       "height": 189,
-      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/no_thum_prop/v2/level0/van/full/252,189/0/default.jpg",
+      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/no_thum_prop/v2/level0/van/full/252,/0/default.jpg",
       "type": "fixed",
       "unsafe": false,
       "width": 252,
@@ -166,7 +166,7 @@ exports[`Thumbnail helper > Thumbnail - Canvases with thumbnail property with le
   {
     "best": {
       "height": 452,
-      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage1_verso/full/340,452/0/default.jpg",
+      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage1_verso/full/340,/0/default.jpg",
       "type": "fixed",
       "unsafe": false,
       "width": 340,
@@ -177,7 +177,7 @@ exports[`Thumbnail helper > Thumbnail - Canvases with thumbnail property with le
   {
     "best": {
       "height": 452,
-      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage2_verso/full/340,452/0/default.jpg",
+      "id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage2_verso/full/340,/0/default.jpg",
       "type": "fixed",
       "unsafe": false,
       "width": 340,
