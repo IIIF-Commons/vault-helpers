@@ -51,6 +51,13 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
     fallback: Array<ImageCandidate>;
     log: string[];
   }> {
+    const thumbnailNotFound = () => imageServiceLoader.getThumbnailFromResource(undefined as any, request, dereference, candidates);
+
+    if (!input) {
+      // We might have candidates already to pick from.
+      return await imageServiceLoader.getThumbnailFromResource(undefined as any, request, dereference, candidates);
+    }
+
     if (typeof input === 'string') {
       const fixed = getFixedSizeFromImage(input as any);
       if (fixed) {
@@ -75,11 +82,8 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
       return { best: getFixedSizeFromImage(fullInput as any), fallback: [], log: [] };
     }
 
-    const thumbnailNotFound = { best: undefined, fallback: [], log: [] };
-
     if (!fullInput) {
-      // We might have candidates already to pick from.
-      return await imageServiceLoader.getThumbnailFromResource(fullInput as any, request, dereference, candidates);
+      return await thumbnailNotFound();
     }
 
     const parseThumbnail = async (resource: DescriptiveNormalized) => {
@@ -131,7 +135,7 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
       case 'Choice': {
         const choice: ChoiceBody = fullInput as any;
         if (!choice.items || choice.items[0]) {
-          return thumbnailNotFound;
+          return await thumbnailNotFound();
         }
         // @todo this could also be configuration, just choosing the first choice.
         return getBestThumbnailAtSize(choice.items[0] as any, request, dereference, candidates, dimensions);
@@ -141,7 +145,7 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
         const collection = fullInput as CollectionNormalized;
         const firstManifest = collection.items[0];
         if (!firstManifest) {
-          return thumbnailNotFound;
+          return await thumbnailNotFound();
         }
         return getBestThumbnailAtSize(firstManifest, request, dereference, candidates, dimensions);
       }
@@ -150,7 +154,7 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
         const manifest = fullInput as ManifestNormalized;
         const firstCanvas = manifest.items[0];
         if (!firstCanvas) {
-          return thumbnailNotFound;
+          return await thumbnailNotFound();
         }
         return getBestThumbnailAtSize(firstCanvas, request, dereference, candidates, dimensions);
       }
@@ -175,10 +179,10 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
       case 'AnnotationCollection':
       case 'CanvasReference':
       case 'ContentResource':
-        return { best: undefined, fallback: [], log: [] };
+        return await thumbnailNotFound();
     }
 
-    return { best: undefined, fallback: [], log: [] };
+    return await thumbnailNotFound();
   }
 
   return {
