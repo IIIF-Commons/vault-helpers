@@ -13,7 +13,7 @@ describe('Thumbnail helper', function () {
     const manifestJson: any = JSON.parse(
       (await readFile(path.join(process.cwd(), 'fixtures/thumbnails', `${fixture.label}.json`))).toString()
     );
-    const manifest = await vault.load<ManifestNormalized>(manifestJson.id || manifestJson['@id']);
+    const manifest = await vault.load<ManifestNormalized>(manifestJson.id || manifestJson['@id'], manifestJson);
 
     if (!manifest) {
       expect.fail(`Invalid manifest`);

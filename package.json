@@ -118,11 +118,11 @@
     "abs-svg-path": "^0.1.0"
   },
   "peerDependencies": {
-    "@atlas-viewer/iiif-image-api": "2.x",
+    "@atlas-viewer/iiif-image-api": "^2.1",
     "@iiif/vault": "0.9.x"
   },
   "devDependencies": {
-    "@atlas-viewer/iiif-image-api": "^2.0.5",
+    "@atlas-viewer/iiif-image-api": "^2.1.0",
     "@iiif/vault": "^0.9.19",
     "@iiif/parser": "^1.0.10",
     "@types/jsdom": "^20.0.0",

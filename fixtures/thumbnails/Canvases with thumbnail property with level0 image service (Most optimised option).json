@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/manifest.json",
+  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/manifest.json",
   "@type": "sc:Manifest",
   "label": "Canvases with thumbnail property which is a level0 image service",
   "sequences": [
@@ -9,11 +9,11 @@
       "label": "Default to page order",
       "canvases": [
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/canvas/1",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/canvas/1",
           "@type": "sc:Canvas",
           "label": "Page 1",
           "thumbnail": {
-            "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/titlepage1_verso/full/170,/0/default.jpg",
+            "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage1_verso/full/170,/0/default.jpg",
             "@type": "dctypes:Image",
             "height": 226,
             "width": 170,
@@ -47,7 +47,7 @@
               ],
               "profile": "http://iiif.io/api/image/2/level0.json",
               "width": 5428,
-              "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/titlepage1_verso",
+              "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage1_verso",
               "@context": "http://iiif.io/api/image/2/context.json",
               "height": 7230
             }
@@ -70,16 +70,16 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/canvas/1"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/canvas/1"
             }
           ]
         },
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/canvas/2",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/canvas/2",
           "@type": "sc:Canvas",
           "label": "Page 2",
           "thumbnail": {
-            "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/titlepage2_verso/full/170,/0/default.jpg",
+            "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage2_verso/full/170,/0/default.jpg",
             "height": 226,
             "width": 170,
             "service": {
@@ -112,7 +112,7 @@
               ],
               "profile": "http://iiif.io/api/image/2/level0.json",
               "width": 5428,
-              "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/titlepage2_verso",
+              "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/titlepage2_verso",
               "@context": "http://iiif.io/api/image/2/context.json",
               "height": 7230
             }
@@ -135,7 +135,7 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_level0/canvas/2"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_level0/canvas/2"
             }
           ]
         }

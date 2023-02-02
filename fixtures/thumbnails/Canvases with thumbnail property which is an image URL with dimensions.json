@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_dimensions/manifest.json",
+  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_dimensions/manifest.json",
   "@type": "sc:Manifest",
   "label": "Canvases with thumbnail property which is an image URL with dimensions",
   "sequences": [
@@ -9,7 +9,7 @@
       "label": "Default to page order",
       "canvases": [
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_dimensions/canvas/1",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_dimensions/canvas/1",
           "@type": "sc:Canvas",
           "label": "Page 1",
           "thumbnail": {
@@ -36,12 +36,12 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_dimensions/canvas/1"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_dimensions/canvas/1"
             }
           ]
         },
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_dimensions/canvas/2",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_dimensions/canvas/2",
           "@type": "sc:Canvas",
           "label": "Page 2",
           "thumbnail": {
@@ -68,7 +68,7 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_dimensions/canvas/2"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_dimensions/canvas/2"
             }
           ]
         }

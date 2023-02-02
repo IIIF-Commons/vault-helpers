@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_url/manifest.json",
+  "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_url/manifest.json",
   "@type": "sc:Manifest",
   "label": "Canvases with thumbnail property which is a image URL",
   "sequences": [
@@ -9,7 +9,7 @@
       "label": "Default to page order",
       "canvases": [
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_url/canvas/1",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_url/canvas/1",
           "@type": "sc:Canvas",
           "label": "Page 1",
           "thumbnail": "https://iiif.io/api/image/2.1/example/reference/15f769d62ca9a3a2deca390efed75d73-4_titlepage1_verso/full/512,/0/default.jpg",
@@ -31,12 +31,12 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_url/canvas/1"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_url/canvas/1"
             }
           ]
         },
         {
-          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_url/canvas/2",
+          "@id": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_url/canvas/2",
           "@type": "sc:Canvas",
           "label": "Page 2",
           "thumbnail": "https://iiif.io/api/image/2.1/example/reference/15f769d62ca9a3a2deca390efed75d73-6_titlepage2_verso/full/512,/0/default.jpg",
@@ -58,7 +58,7 @@
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               },
-              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/thum_prop/v2/canvas_thum_url/canvas/2"
+              "on": "https://iiif-commons.github.io/fixtures/examples/thumbnail/canvas/thum_prop/v2/canvas_thum_url/canvas/2"
             }
           ]
         }
