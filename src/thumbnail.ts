@@ -10,7 +10,6 @@ import {
   ManifestNormalized,
   Reference,
 } from '@iiif/presentation-3';
-import { Vault } from '@iiif/vault';
 import {
   FixedSizeImage,
   FixedSizeImageService,
@@ -21,8 +20,12 @@ import {
   UnknownSizeImage,
   VariableSizeImage,
 } from '@atlas-viewer/iiif-image-api';
+import { compatVault, CompatVault } from './compat';
 
-export function createThumbnailHelper(vault: Vault, dependencies: { imageServiceLoader?: ImageServiceLoader } = {}) {
+export function createThumbnailHelper(
+  vault: CompatVault = compatVault,
+  dependencies: { imageServiceLoader?: ImageServiceLoader } = {}
+) {
   const imageServiceLoader = dependencies.imageServiceLoader || new ImageServiceLoader();
 
   async function getBestThumbnailAtSize(
@@ -51,7 +54,8 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
     fallback: Array<ImageCandidate>;
     log: string[];
   }> {
-    const thumbnailNotFound = () => imageServiceLoader.getThumbnailFromResource(undefined as any, request, dereference, candidates);
+    const thumbnailNotFound = () =>
+      imageServiceLoader.getThumbnailFromResource(undefined as any, request, dereference, candidates);
 
     if (!input) {
       // We might have candidates already to pick from.
@@ -101,7 +105,7 @@ export function createThumbnailHelper(vault: Vault, dependencies: { imageService
     switch (fullInput.type) {
       case 'Annotation': {
         // Grab the body.
-        const contentResources = fullInput.body;
+        const contentResources = Array.isArray(fullInput.body) ? fullInput.body : [fullInput.body];
         // @todo this could be configuration.
         const firstContentResources = vault.get<ContentResource>(contentResources[0]);
         if (dimensions && !(firstContentResources as any).width) {
