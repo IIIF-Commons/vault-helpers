@@ -59,7 +59,7 @@ export function getVisibleCanvasesFromCanvasId(
     return [];
   }
 
-  const canvasBehavior = fullCanvas.behavior;
+  const canvasBehavior = fullCanvas.behavior || [];
   const isPaged = preventPaged ? false : behavior.includes('paged');
   const isContinuous = isPaged ? false : behavior.includes('continuous');
   const isIndividuals = isPaged || isContinuous ? false : behavior.includes('individuals');
@@ -97,7 +97,7 @@ export function getManifestSequence(
   manifestOrRange: ManifestNormalized | RangeNormalized,
   { disablePaging, skipNonPaged }: { disablePaging?: boolean; skipNonPaged?: boolean } = {}
 ): [Reference<'Canvas'>[], number[][]] {
-  const behavior = manifestOrRange.behavior;
+  const behavior = manifestOrRange.behavior || [];
   const isPaged = behavior.includes('paged');
   const isContinuous = isPaged ? false : behavior.includes('continuous');
   const isIndividuals = isPaged || isContinuous ? false : behavior.includes('individuals');
