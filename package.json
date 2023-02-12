@@ -44,6 +44,10 @@
       "require": "./dist/content-state/cjs/content-state.js",
       "import": "./dist/content-state/esm/content-state.mjs"
     },
+    "./fetch": {
+      "require": "./dist/fetch/cjs/fetch.js",
+      "import": "./dist/fetch/esm/fetch.mjs"
+    },
     "./painting-annotations": {
       "require": "./dist/painting-annotations/cjs/painting-annotations.js",
       "import": "./dist/painting-annotations/esm/painting-annotations.mjs"
@@ -95,6 +99,9 @@
       ],
       "ranges": [
         ".build/types/ranges.d.ts"
+      ],
+      "fetch": [
+        ".build/types/fetch.d.ts"
       ],
       "sequences": [
         ".build/types/sequences.d.ts"
