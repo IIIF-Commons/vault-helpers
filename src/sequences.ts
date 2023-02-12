@@ -53,7 +53,7 @@ export function getVisibleCanvasesFromCanvasId(
   canvasId: string | null,
   preventPaged = false
 ): Reference<'Canvas'>[] {
-  const behavior = manifestOrRange.behavior;
+  const behavior = manifestOrRange.behavior || [];
   const fullCanvas = canvasId ? vault.get<CanvasNormalized>(canvasId) : null;
   if (!fullCanvas) {
     return [];
