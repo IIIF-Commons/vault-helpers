@@ -1,4 +1,4 @@
-import { thumbnailFixtures } from '../fixtures';
+import { thumbnailFixtures } from '../fixtures.mjs';
 import { expect, test } from 'vitest';
 import { Vault } from '@iiif/vault';
 import { createThumbnailHelper } from '../src/thumbnail';

@@ -1,7 +1,8 @@
 import { Vault } from '@iiif/vault';
 import { ManifestNormalized, RangeNormalized, Reference } from '@iiif/presentation-3';
+import { CompatVault, compatVault } from './compat';
 
-export function createRangeHelper(vault: Vault) {
+export function createRangeHelper(vault: CompatVault = compatVault) {
   return {
     findFirstCanvasFromRange: (range: RangeNormalized) => findFirstCanvasFromRange(vault, range),
     findAllCanvasesInRange: (range: RangeNormalized) => findAllCanvasesInRange(vault, range),
@@ -11,7 +12,7 @@ export function createRangeHelper(vault: Vault) {
   };
 }
 
-export function findFirstCanvasFromRange(vault: Vault, range: RangeNormalized): null | Reference<'Canvas'> {
+export function findFirstCanvasFromRange(vault: CompatVault, range: RangeNormalized): null | Reference<'Canvas'> {
   for (const inner of range.items) {
     if (inner.type === 'Canvas') {
       return inner as Reference<'Canvas'>;
@@ -26,7 +27,7 @@ export function findFirstCanvasFromRange(vault: Vault, range: RangeNormalized): 
   return null;
 }
 
-export function findAllCanvasesInRange(vault: Vault, range: RangeNormalized): Array<Reference<'Canvas'>> {
+export function findAllCanvasesInRange(vault: CompatVault, range: RangeNormalized): Array<Reference<'Canvas'>> {
   const found: Reference<'Canvas'>[] = [];
   for (const inner of range.items) {
     if (inner.type === 'Canvas') {
@@ -48,7 +49,7 @@ export function findAllCanvasesInRange(vault: Vault, range: RangeNormalized): Ar
 }
 
 export function findManifestSelectedRange(
-  vault: Vault,
+  vault: CompatVault,
   manifest: ManifestNormalized,
   canvasId: string
 ): null | RangeNormalized {
@@ -62,7 +63,11 @@ export function findManifestSelectedRange(
   return null;
 }
 
-export function findSelectedRange(vault: Vault, range: RangeNormalized, canvasId: string): null | RangeNormalized {
+export function findSelectedRange(
+  vault: CompatVault,
+  range: RangeNormalized,
+  canvasId: string
+): null | RangeNormalized {
   for (const inner of range.items) {
     const parsedId = inner.id?.split('#')[0];
     if ((inner as any).type === 'SpecificResource' && (inner as any).source === canvasId) {

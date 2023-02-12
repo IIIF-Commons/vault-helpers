@@ -1,8 +1,8 @@
 import { CanvasNormalized, ManifestNormalized, RangeNormalized, Reference } from '@iiif/presentation-3';
-import { Vault } from '@iiif/vault';
 import { findAllCanvasesInRange } from './ranges';
+import { compatVault, CompatVault } from './compat';
 
-export function createSequenceHelper(vault: Vault) {
+export function createSequenceHelper(vault: CompatVault = compatVault) {
   return {
     getVisibleCanvasesFromCanvasId: (
       manifestOrRange: ManifestNormalized | RangeNormalized,
@@ -48,7 +48,7 @@ export function createSequenceHelper(vault: Vault) {
  *
  */
 export function getVisibleCanvasesFromCanvasId(
-  vault: Vault,
+  vault: CompatVault = compatVault,
   manifestOrRange: ManifestNormalized | RangeNormalized,
   canvasId: string | null,
   preventPaged = false
@@ -93,7 +93,7 @@ export function getVisibleCanvasesFromCanvasId(
 }
 
 export function getManifestSequence(
-  vault: Vault,
+  vault: CompatVault = compatVault,
   manifestOrRange: ManifestNormalized | RangeNormalized,
   { disablePaging, skipNonPaged }: { disablePaging?: boolean; skipNonPaged?: boolean } = {}
 ): [Reference<'Canvas'>[], number[][]] {

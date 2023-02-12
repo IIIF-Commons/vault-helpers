@@ -8,8 +8,9 @@ import {
 } from '@iiif/presentation-3';
 import { Paintables } from './types';
 import { parseSpecificResource } from './parse-specific-resource';
+import { compatVault, CompatVault } from '../compat';
 
-export function createPaintingAnnotationsHelper(vault: Vault) {
+export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault) {
   function getAllPaintingAnnotations(canvasOrId: string | CanvasNormalized | undefined | null) {
     const canvas = canvasOrId
       ? typeof canvasOrId === 'string'
@@ -44,7 +45,8 @@ export function createPaintingAnnotationsHelper(vault: Vault) {
       if (annotation.type !== 'Annotation') {
         throw new Error(`getPaintables() accept either a canvas or list of annotations`);
       }
-      const bodies = vault.get<ContentResource>(annotation.body);
+      const unknownBodies = vault.get<ContentResource>(annotation.body);
+      const bodies = Array.isArray(unknownBodies) ? unknownBodies : [unknownBodies];
       for (const unknownBody of bodies) {
         const [body, { selector }] = parseSpecificResource(unknownBody);
         const type = (body.type || 'unknown').toLowerCase();
