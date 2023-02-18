@@ -14,6 +14,7 @@ import chalk from 'chalk';
     'objects',
     'ranges',
     'sequences',
+    'fetch',
   ];
 
   // Main UMD build.

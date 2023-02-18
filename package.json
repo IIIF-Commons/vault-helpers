@@ -44,6 +44,10 @@
       "require": "./dist/content-state/cjs/content-state.js",
       "import": "./dist/content-state/esm/content-state.mjs"
     },
+    "./fetch": {
+      "require": "./dist/fetch/cjs/fetch.js",
+      "import": "./dist/fetch/esm/fetch.mjs"
+    },
     "./painting-annotations": {
       "require": "./dist/painting-annotations/cjs/painting-annotations.js",
       "import": "./dist/painting-annotations/esm/painting-annotations.mjs"
@@ -96,6 +100,9 @@
       "ranges": [
         ".build/types/ranges.d.ts"
       ],
+      "fetch": [
+        ".build/types/fetch.d.ts"
+      ],
       "sequences": [
         ".build/types/sequences.d.ts"
       ]
@@ -118,11 +125,11 @@
     "abs-svg-path": "^0.1.0"
   },
   "peerDependencies": {
-    "@atlas-viewer/iiif-image-api": "2.x",
+    "@atlas-viewer/iiif-image-api": "^2.1.1",
     "@iiif/vault": "0.9.x"
   },
   "devDependencies": {
-    "@atlas-viewer/iiif-image-api": "^2.0.5",
+    "@atlas-viewer/iiif-image-api": "^2.1.1",
     "@iiif/vault": "^0.9.19",
     "@iiif/parser": "^1.0.10",
     "@types/jsdom": "^20.0.0",
@@ -137,6 +144,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "happy-dom": "^6.0.3",
     "jsdom": "^20.0.0",
+    "node-fetch": "3.3.0",
     "prettier": "^2.5.1",
     "react": "17.0.2",
     "react-i18next": "^11.18.0",

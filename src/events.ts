@@ -1,7 +1,7 @@
 import type { Reference } from '@iiif/presentation-3';
-import type { Vault } from '@iiif/vault';
+import { compatVault, CompatVault } from './compat';
 
-export function createEventsHelper(vault: Vault) {
+export function createEventsHelper(vault: CompatVault = compatVault) {
   return {
     addEventListener<T>(
       resource: Reference<any>,

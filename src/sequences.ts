@@ -1,8 +1,8 @@
 import { CanvasNormalized, ManifestNormalized, RangeNormalized, Reference } from '@iiif/presentation-3';
-import { Vault } from '@iiif/vault';
 import { findAllCanvasesInRange } from './ranges';
+import { compatVault, CompatVault } from './compat';
 
-export function createSequenceHelper(vault: Vault) {
+export function createSequenceHelper(vault: CompatVault = compatVault) {
   return {
     getVisibleCanvasesFromCanvasId: (
       manifestOrRange: ManifestNormalized | RangeNormalized,
@@ -48,18 +48,18 @@ export function createSequenceHelper(vault: Vault) {
  *
  */
 export function getVisibleCanvasesFromCanvasId(
-  vault: Vault,
+  vault: CompatVault = compatVault,
   manifestOrRange: ManifestNormalized | RangeNormalized,
   canvasId: string | null,
   preventPaged = false
 ): Reference<'Canvas'>[] {
-  const behavior = manifestOrRange.behavior;
+  const behavior = manifestOrRange.behavior || [];
   const fullCanvas = canvasId ? vault.get<CanvasNormalized>(canvasId) : null;
   if (!fullCanvas) {
     return [];
   }
 
-  const canvasBehavior = fullCanvas.behavior;
+  const canvasBehavior = fullCanvas.behavior || [];
   const isPaged = preventPaged ? false : behavior.includes('paged');
   const isContinuous = isPaged ? false : behavior.includes('continuous');
   const isIndividuals = isPaged || isContinuous ? false : behavior.includes('individuals');
@@ -93,11 +93,11 @@ export function getVisibleCanvasesFromCanvasId(
 }
 
 export function getManifestSequence(
-  vault: Vault,
+  vault: CompatVault = compatVault,
   manifestOrRange: ManifestNormalized | RangeNormalized,
   { disablePaging, skipNonPaged }: { disablePaging?: boolean; skipNonPaged?: boolean } = {}
 ): [Reference<'Canvas'>[], number[][]] {
-  const behavior = manifestOrRange.behavior;
+  const behavior = manifestOrRange.behavior || [];
   const isPaged = behavior.includes('paged');
   const isContinuous = isPaged ? false : behavior.includes('continuous');
   const isIndividuals = isPaged || isContinuous ? false : behavior.includes('individuals');
@@ -129,7 +129,8 @@ export function getManifestSequence(
   let flushNextPaged = false;
   for (let i = 0; i < manifestItems.length; i++) {
     const canvas = vault.get<CanvasNormalized>(manifestItems[i]);
-    if (canvas.behavior.includes('non-paged')) {
+    const canvasBehavior = canvas.behavior || [];
+    if (canvasBehavior.includes('non-paged')) {
       if (i === offset) {
         offset++;
       }
@@ -141,7 +142,7 @@ export function getManifestSequence(
       continue;
     }
 
-    if (i === offset || canvas.behavior.includes('facing-pages')) {
+    if (i === offset || canvasBehavior.includes('facing-pages')) {
       // Flush and push a single.
       if (currentOrdering.length) {
         flushNextPaged = true;
