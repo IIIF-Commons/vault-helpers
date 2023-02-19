@@ -1,0 +1,73 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+<div id="root"></div>
+
+<style>
+
+  /*div svg {*/
+  /*    scale: 0.5;*/
+  /*}*/
+</style>
+
+<div id="svg"></div>
+
+<button id="change">Make change</button>
+<button id="pop">remove</button>
+<script type="module">
+  import '../src/demos/svg-editor';
+
+  // import { svgSelectorEditor } from "../src/svg-selector-editor";
+  // import { parseSelector } from "../src";
+  //
+  // const parsed = parseSelector({
+  //   type: 'SvgSelector',
+  //   value: `<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg"><g><rect x="100" y="100" width="300" height="300"></rect></g></svg>`,
+  // });
+  //
+  // const store = svgSelectorEditor(parsed.selector, {
+  //   initiallyOpen: true,
+  //   recalculateSvg: true,
+  //   recalculateSvgAs: 'polygon',
+  // });
+  // const { pushPoint, popPoint } = store.getState();
+  //
+  // console.log(parsed.selector);
+  //
+  // document.getElementById('svg').innerHTML = store.getState().svg;
+  // store.subscribe(() => {
+  //   document.getElementById('svg').innerHTML = store.getState().svg;
+  // });
+  // const $change = document.getElementById('change');
+  //
+  // const changes = [
+  //   () => pushPoint(120, 120),
+  //   () => pushPoint(140, 160),
+  //   () => pushPoint(150, 160),
+  //   () => pushPoint(250, 170),
+  // ];
+  //
+  // $change.addEventListener('click', () => {
+  //   const next = changes.pop();
+  //   if (next) { next(); } else {
+  //     pushPoint(~~(Math.random() * 800),~~(Math.random() * 600))
+  //   }
+  // });
+  //
+  // document.getElementById('pop').addEventListener('click', popPoint)
+  //
+  // document.getElementById('svg').addEventListener('mousemove', e => {
+  //   console.log(e);
+  // })
+
+</script>
+
+</body>
+</html>
