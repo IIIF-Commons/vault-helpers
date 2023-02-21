@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla';
-import { SvgSelector } from './annotation-targets/selector-types';
+import { SvgSelector } from '../annotation-targets/selector-types';
 
 interface SvgSelectorEditor extends SvgSelector {
   points: Array<[number, number]>;

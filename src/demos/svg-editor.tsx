@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { render } from 'react-dom';
 import { parseSelector } from '../annotation-targets/parse-selector';
 import { useStore } from 'zustand';
-import { svgSelectorEditor } from '../svg-selector-editor';
+import { svgSelectorEditor } from '../selector-editors/svg-selector-editor';
 
 const parsed = parseSelector({
   type: 'SvgSelector',

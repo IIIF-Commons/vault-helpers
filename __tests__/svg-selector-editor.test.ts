@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { svgSelectorEditor } from '../src/svg-selector-editor';
+import { svgSelectorEditor } from '../src/selector-editors/svg-selector-editor';
 import { parseSelector } from '../src';
 import invariant from 'tiny-invariant';
 
