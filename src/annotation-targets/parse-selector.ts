@@ -7,7 +7,7 @@ import {
   SelectorStyle,
   SvgShapeType,
 } from './selector-types';
-import { Selector } from '@iiif/presentation-3';
+import { ImageApiSelector, Selector } from '@iiif/presentation-3';
 import { NormalizedSvgPathCommand, NormalizedSvgPathCommandType, parseAndNormalizeSvgPath } from './normalize-svg';
 import { flattenCubicBezier, flattenQuadraticBezier } from './bezier';
 
@@ -21,32 +21,48 @@ const RGBA_COLOR = /^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/;
 
 export function parseSelector(
   source: Selector | Selector[],
-  { domParser, svgPreprocessor }: { domParser?: DOMParser; svgPreprocessor?: (svg: string) => string } = {}
+  {
+    domParser,
+    svgPreprocessor,
+    iiifRenderingHints,
+  }: { domParser?: DOMParser; svgPreprocessor?: (svg: string) => string; iiifRenderingHints?: ImageApiSelector } = {}
 ): ParsedSelector {
   if (Array.isArray(source)) {
-    return (source as Array<string | Selector>).reduce(
-      <ParseSelector>(data: ParsedSelector, nextSource: string | Selector) => {
-        const { selector, selectors } = parseSelector(nextSource);
-        if (selector) {
-          if (!data.selector) {
-            data.selector = selector;
+    return resolveHints(
+      (source as Array<string | Selector>).reduce(
+        <ParseSelector>(data: ParsedSelector, nextSource: string | Selector) => {
+          const {
+            selector,
+            selectors,
+            iiifRenderingHints: newIiifRenderingHints,
+          } = parseSelector(nextSource, { domParser, svgPreprocessor, iiifRenderingHints });
+          if (selector) {
+            if (!data.selector) {
+              data.selector = selector;
+            }
+            data.selectors.push(...selectors);
           }
-          data.selectors.push(...selectors);
-        }
-        return data;
-      },
-      {
-        selector: null,
-        selectors: [],
-      } as ParsedSelector
+          if (newIiifRenderingHints) {
+            data.iiifRenderingHints = data.iiifRenderingHints || { type: 'ImageApiSelector' };
+            Object.assign(data.iiifRenderingHints, newIiifRenderingHints);
+          }
+          return data;
+        },
+        {
+          selector: null,
+          selectors: [],
+          iiifRenderingHints,
+        } as ParsedSelector
+      )
     );
   }
 
   if (!source) {
-    return {
+    return resolveHints({
       selector: null,
       selectors: [],
-    };
+      iiifRenderingHints,
+    });
   }
 
   if (typeof source === 'string') {
@@ -54,27 +70,51 @@ export function parseSelector(
 
     if (!fragment) {
       // This is an unknown selector.
-      return {
+      return resolveHints({
         selector: null,
         selectors: [],
-      };
+        iiifRenderingHints,
+      });
     }
 
-    return parseSelector({ type: 'FragmentSelector', value: fragment });
+    return parseSelector(
+      { type: 'FragmentSelector', value: fragment },
+      { svgPreprocessor, iiifRenderingHints, domParser }
+    );
   }
 
-  if (source.type === 'PointSelector' && (source.t || source.t === 0)) {
-    const selector: TemporalSelector = {
-      type: 'TemporalSelector',
-      temporal: {
-        startTime: source.t,
-      },
-    };
+  if (source.type) {
+    if (source.type === 'PointSelector' && (source.t || source.t === 0)) {
+      const selector: TemporalSelector = {
+        type: 'TemporalSelector',
+        temporal: {
+          startTime: source.t,
+        },
+      };
 
-    return {
-      selector,
-      selectors: [selector],
-    };
+      return resolveHints({
+        selector,
+        selectors: [selector],
+        iiifRenderingHints,
+      });
+    }
+  }
+
+  if (isImageApiSelector(source)) {
+    const selectors: SupportedSelectors[] = [];
+    if (source.region) {
+      const parsedRegion = parseSelector(
+        { type: 'FragmentSelector', value: 'xywh=' + source.region },
+        { domParser, svgPreprocessor, iiifRenderingHints }
+      );
+      selectors.push(...parsedRegion.selectors);
+    }
+
+    return resolveHints({
+      selector: selectors[0],
+      selectors: selectors,
+      iiifRenderingHints: iiifRenderingHints ? { ...iiifRenderingHints, ...source } : source,
+    });
   }
 
   if (source.type === 'FragmentSelector') {
@@ -91,10 +131,11 @@ export function parseSelector(
         },
       };
 
-      return {
+      return resolveHints({
         selector,
         selectors: [selector],
-      };
+        iiifRenderingHints,
+      });
     }
 
     const matchTimeSelector = source.value.match(TEMPORAL_SELECTOR);
@@ -107,16 +148,18 @@ export function parseSelector(
         },
       };
 
-      return {
+      return resolveHints({
         selector,
         selectors: [selector],
-      };
+        iiifRenderingHints,
+      });
     }
 
-    return {
+    return resolveHints({
       selector: null,
       selectors: [],
-    };
+      iiifRenderingHints,
+    });
   }
 
   if (source.type === 'SvgSelector' && 'value' in source) {
@@ -140,10 +183,11 @@ export function parseSelector(
         .querySelector('svg');
       if (!svgElement) {
         console.warn(`Illegal SVG selector: ${source.value}`);
-        return {
+        return resolveHints({
           selector: null,
           selectors: [],
-        };
+          iiifRenderingHints,
+        });
       }
       const selectorElem = getSelectorElement(svgElement);
       if (selectorElem) {
@@ -168,15 +212,17 @@ export function parseSelector(
         ? { unit: 'pixel', x: rect[0], y: rect[1], width: rect[2] - rect[0], height: rect[3] - rect[1] }
         : undefined,
     };
-    return {
+    return resolveHints({
       selector: sel,
       selectors: [sel],
-    };
+      iiifRenderingHints,
+    });
   }
-  return {
+  return resolveHints({
     selector: null,
     selectors: [],
-  };
+    iiifRenderingHints,
+  });
 }
 
 export type SelectorElement = {
@@ -441,4 +487,51 @@ function extractStyles(selectorElement: SVGElement): { style?: SelectorStyle; sv
     }
   }
   return { svg: rootElem.outerHTML, style: Object.keys(style).length > 0 ? style : undefined };
+}
+
+export function isImageApiSelector(t: unknown): t is ImageApiSelector {
+  return !!t && (t as any).type === 'iiif:ImageApiSelector' && (t as any).type === 'iiif:ImageApiSelector';
+}
+
+function resolveHints(supported: ParsedSelector): ParsedSelector {
+  if (supported.iiifRenderingHints) {
+    const source = supported.iiifRenderingHints;
+    if (source.rotation) {
+      const parsedRotation = parseRotation(source.rotation);
+      if (parsedRotation) {
+        if (supported.selectors.length) {
+          for (const selector of supported.selectors) {
+            selector.rotation = parsedRotation;
+          }
+        } else {
+          supported.selectors.push({
+            type: 'RotationSelector',
+            rotation: parsedRotation,
+          });
+        }
+      }
+    }
+  } else {
+    delete supported.iiifRenderingHints;
+  }
+
+  return supported;
+}
+
+/**
+ * Parse rotation "90", "180", "!90"
+ */
+export function parseRotation(input: string) {
+  let num = parseFloat(input);
+  if (num && input.startsWith('!')) {
+    // @note we don't support mirroring..
+    num = 360 - num;
+  }
+  if (num) {
+    num = num % 360;
+  }
+  if (num !== num) {
+    return 0;
+  }
+  return num || 0;
 }

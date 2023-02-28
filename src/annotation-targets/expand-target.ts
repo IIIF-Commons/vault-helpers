@@ -1,4 +1,4 @@
-import { ExternalWebResource, W3CAnnotationTarget } from '@iiif/presentation-3';
+import { ExternalWebResource, W3CAnnotationTarget, AnnotationTarget, ImageApiSelector } from '@iiif/presentation-3';
 import { SupportedTarget } from './target-types';
 import { parseSelector } from './parse-selector';
 

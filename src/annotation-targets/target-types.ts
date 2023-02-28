@@ -7,6 +7,12 @@ export type SupportedTarget = {
     | ExternalWebResource
     | { id: string; type: 'Unknown' | 'Canvas' | 'Range' | 'Manifest'; partOf?: Array<{ id: string; type: string }> };
   purpose?: string;
+  imageServiceHints?: {
+    size?: string;
+    rotation?: string;
+    quality?: string;
+    format?: string;
+  };
   selector: SupportedSelectors | null;
   selectors: SupportedSelectors[];
 };
