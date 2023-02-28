@@ -1,3 +1,5 @@
+import { ImageApiSelector } from '@iiif/presentation-3';
+
 export type SvgShapeType = 'rect' | 'circle' | 'ellipse' | 'line' | 'polyline' | 'polygon' | 'path';
 export interface SupportedSelector {
   type: string;
@@ -12,6 +14,7 @@ export interface SupportedSelector {
     width?: number;
     height?: number;
   };
+  rotation?: number;
   points?: [number, number][];
   svg?: string;
   svgShape?: SvgShapeType;
@@ -36,6 +39,7 @@ export interface BoxSelector extends SupportedSelector {
     width: number;
     height: number;
   };
+  rotation?: number;
 }
 
 export interface PointSelector extends SupportedSelector {
@@ -44,6 +48,7 @@ export interface PointSelector extends SupportedSelector {
     x: number;
     y: number;
   };
+  rotation?: number;
 }
 
 export interface SvgSelector extends SupportedSelector {
@@ -58,6 +63,7 @@ export interface SvgSelector extends SupportedSelector {
     width: number;
     height: number;
   };
+  rotation?: number;
 }
 
 export interface TemporalSelector extends SupportedSelector {
@@ -66,6 +72,11 @@ export interface TemporalSelector extends SupportedSelector {
     startTime: number;
     endTime?: number;
   };
+}
+
+export interface RotationSelector extends SupportedSelector {
+  type: 'RotationSelector';
+  rotation: number;
 }
 
 export interface TemporalBoxSelector extends SupportedSelector {
@@ -77,15 +88,23 @@ export interface TemporalBoxSelector extends SupportedSelector {
     width: number;
     height: number;
   };
+  rotation?: number;
   temporal: {
     startTime: number;
     endTime?: number;
   };
 }
 
-export type SupportedSelectors = TemporalSelector | BoxSelector | TemporalBoxSelector | PointSelector | SvgSelector;
+export type SupportedSelectors =
+  | TemporalSelector
+  | BoxSelector
+  | TemporalBoxSelector
+  | PointSelector
+  | SvgSelector
+  | RotationSelector;
 
 export type ParsedSelector = {
   selector: SupportedSelectors | null;
   selectors: SupportedSelectors[];
+  iiifRenderingHints?: ImageApiSelector;
 };
