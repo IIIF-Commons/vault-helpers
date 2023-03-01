@@ -2,8 +2,8 @@ import { InternationalString } from '@iiif/presentation-3';
 
 export function getClosestLanguage(
   i18nLanguage: string,
-  languages: string[],
-  i18nLanguages: string[] = [],
+  languages: readonly string[],
+  i18nLanguages: readonly string[] = [],
   strictFallback = false
 ) {
   if (!i18nLanguage || !languages || languages.length === 0) {
@@ -71,7 +71,7 @@ export function buildLocaleString(
     strictFallback?: boolean;
     defaultText?: string;
     separator?: string;
-    fallbackLanguages?: string[];
+    fallbackLanguages?: readonly string[];
     closest?: boolean;
   } = {}
 ) {

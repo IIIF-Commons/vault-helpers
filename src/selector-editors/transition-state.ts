@@ -11,6 +11,9 @@ interface TransitionState {
   delta: [number, number];
   snaps: [number, number, number, number][];
   snapThreshold: number;
+  /**
+   * Rotation in degrees
+   */
   currentRotation: number;
   currentTranslation: { x: number; y: number };
   currentSkew: { x: number; y: number };
@@ -54,11 +57,11 @@ interface TransitionStateActions {
   cancelTransition(): void;
   setPointScale(scale: number): void;
   finishTransition(): TransitionResult | undefined;
-  transform(newOrigin: [number, number], options: TransformOptions): void;
-  translate(newOrigin: [number, number], options: InteractionOptions): void;
-  scale(newOrigin: [number, number], options: ScaleOptions): void;
-  rotate(newOrigin: [number, number], options: RotateOptions): void;
-  scaleAndRotate(touches: [number, number][], options: ScaleRotateOptions): void;
+  transform(newOrigin: [number, number], options?: TransformOptions): void;
+  translate(newOrigin: [number, number], options?: InteractionOptions): void;
+  scale(newOrigin: [number, number], options?: ScaleOptions): void;
+  rotate(newOrigin: [number, number], options?: RotateOptions): void;
+  scaleAndRotate(touches: [number, number][], options?: ScaleRotateOptions): void;
   apply(nextState: Partial<TransitionState>): void;
 }
 
@@ -174,7 +177,7 @@ export const transitionState = () =>
       transform(_newOrigin: [number, number], options: TransformOptions) {
         const state = getState();
         const newOrigin = fromOrigin(asOrigin(_newOrigin), state.pointScale);
-        const origin = state.origin;
+        const origin = fromOrigin(state.origin, state.pointScale);
         const dx = newOrigin[0] - origin[0];
         const dy = newOrigin[1] - origin[1];
         const nextState: Partial<TransitionState> = {};
@@ -206,10 +209,18 @@ export const transitionState = () =>
       },
       apply(nextState: Partial<TransitionState>) {
         const state = getState();
-        const points = state.initialPoints;
+        nextState.points = [...state.initialPoints];
+        const activePoints = state.activePoints.length
+          ? state.activePoints
+          : (Object.keys(state.initialPoints) as any[] as number[]);
+        const translation = nextState.currentTranslation;
 
-        if (nextState.currentTranslation) {
-          // @todo apply translation
+        // Do this quickly and correctly to start with.
+        if (translation) {
+          for (const key of activePoints) {
+            const next = nextState.points[key as any];
+            nextState.points[key] = [next[0] + translation.x, next[1] + translation.y];
+          }
         }
         if (nextState.currentSkew) {
           // @todo apply skew
@@ -228,7 +239,7 @@ export const transitionState = () =>
       translate(_newOrigin: [number, number], options: InteractionOptions = {}) {
         const state = getState();
         const newOrigin = fromOrigin(asOrigin(_newOrigin), state.pointScale);
-        const origin = state.origin;
+        const origin = fromOrigin(state.origin, state.pointScale);
         const dx = newOrigin[0] - origin[0];
         const dy = newOrigin[1] - origin[1];
         const nextState: Partial<TransitionState> = {};
@@ -376,6 +387,10 @@ interface TransitionOptions {
   initialTouches?: [number, number][];
   /**
    * This will be used to translate origin units to point units.
+   *
+   * To be read as "The scale of the points when compared to the input" so a scale
+   * of 1/4 or 0.25 would map a point [1, 2] to [4, 8] in the environment and vice
+   * versa.
    */
   pointScale?: number;
   activePoints?: number[];
