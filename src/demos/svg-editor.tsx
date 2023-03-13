@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { render } from 'react-dom';
 import { parseSelector } from '../annotation-targets/parse-selector';
 import { useStore } from 'zustand';
 import { svgSelectorEditor } from '../selector-editors/svg-selector-editor';
+import { transitionState } from '../selector-editors/transition-state';
 
 const parsed = parseSelector({
   type: 'SvgSelector',
@@ -12,6 +13,7 @@ const store = svgSelectorEditor(parsed.selector as any, {
   initiallyOpen: true,
   recalculateSvg: true,
   recalculateSvgAs: 'polygon',
+  recalculateSelectedBounds: true,
 });
 
 const changes = [
@@ -33,9 +35,12 @@ const styles = `
     .controls--selected {
         fill: red;
     }
+    .controls--selected.controls--bounds {
+      opacity: 0.5;
+      fill: #fff;
+    }
 `;
 function App() {
-
   /**
    * @todo Current problems and takeaways so far:
    *   - Lots of extra help needed on selecting/deselecting things.
@@ -75,44 +80,128 @@ function App() {
    *      - Triangle (ALSO CAN'T EDIT)
    */
 
-  const { svg, points, toggleSelected, selectedPoints, translatePointAtIndex, svgShape } = useStore(store);
+  const {
+    svg,
+    points,
+    selectedBounds,
+    toggleSelected,
+    removeSelected,
+    setSelected,
+    selectedPoints,
+    translatePointAtIndex,
+    svgShape,
+  } = useStore(store);
   const mousedown = useRef<number>(-1);
   const start = useRef<[number, number] | undefined>(undefined);
   const delta = useRef<[number, number]>([0, 0]);
   const current = useRef<SVGElement | undefined>(undefined);
+  // New
+  const transition = useMemo(() => transitionState(), []);
+  const { startTransition, finishTransition, translate, transform } = useMemo(
+    () => transition.getState(),
+    [transition]
+  );
+  const shadow = useRef<SVGElement>(null);
+  const bounds = useRef<SVGElement>(null);
+
+  useEffect(() => {
+    return transition.subscribe((state, prevState) => {
+      // Moving the current point marker
+      if (current.current) {
+        // current.current.style.transform = `matrix(${state.currentMatrix.join(',')})`;
+        current.current.style.transform = `translate(${state.currentTranslation.x}px, ${state.currentTranslation.y}px)`;
+      }
+      if (bounds.current) {
+        bounds.current.style.transform = `translate(${state.currentTranslation.x}px, ${state.currentTranslation.y}px)`;
+      }
+
+      // Moving the shadow element.
+      if (shadow.current) {
+        if (state.isTransitioning) {
+          // When isTransitioning changes false -> true
+          if (!prevState.isTransitioning) {
+            shadow.current.style.display = 'block';
+          }
+
+          // Otherwise update all the points.
+          shadow.current.setAttribute('points', state.points.map((r) => r.join(',')).join(' '));
+        } else if (prevState.isTransitioning) {
+          // When isTransitioning changes true -> false
+          shadow.current.style.display = 'none';
+        }
+      }
+    });
+  }, [transition]);
+
+  const handleTransform = (direction: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    startTransition({
+      origin: [e.pageX, e.pageY],
+      points: points,
+      activePoints: selectedPoints,
+      data: { type: 'transform', options: { direction } },
+    });
+  };
+  const beginTranslate = (e: MouseEvent) => {
+    e.preventDefault();
+    startTransition({
+      origin: [e.pageX, e.pageY],
+      points: points,
+      activePoints: selectedPoints,
+      data: { type: 'translate' },
+    });
+  };
+
   const handleToggle = (point: [number, number], idx: number) => (e: MouseEvent) => {
     if (e.metaKey) {
-      console.log({ point, e, idx });
+      e.preventDefault();
       toggleSelected(idx);
     } else {
-      mousedown.current = idx;
+      const isMulti = selectedPoints.indexOf(idx) !== -1;
+      startTransition({
+        origin: [e.pageX, e.pageY],
+        points: points,
+        activePoints: isMulti ? selectedPoints : [idx],
+        data: { type: 'translate' },
+      });
       current.current = e.target as any;
-      delta.current = [0, 0];
-      start.current = [e.pageX, e.pageY];
+
+      if (!isMulti) {
+        e.preventDefault();
+        setSelected([idx]);
+      }
     }
   };
-  const mouseup = () => {
-    if (mousedown.current !== -1) {
-      const start = points[mousedown.current];
-      translatePointAtIndex(mousedown.current, delta.current);
+  const mouseup = (e: any) => {
+    e.preventDefault();
+    if (transition.getState().isTransitioning) {
+      const result = finishTransition();
+      if (result && result.points[0]) {
+        for (const pointIdx of result.activePointsIndexes) {
+          translatePointAtIndex(pointIdx, [result.translation.x, result.translation.y]);
+        }
+      }
+      return;
     }
-
-    if (current.current) {
-      current.current.style.transform = '';
-      current.current = undefined;
-    }
-    mousedown.current = -1;
-    delta.current = [0, 0];
   };
   const mousemove = (e: any) => {
-    if (mousedown.current !== -1 && start.current) {
+    if (transition.getState().isTransitioning) {
       e.stopPropagation();
-      delta.current[0] = e.pageX - start.current[0];
-      delta.current[1] = e.pageY - start.current[1];
+      console.log('data', transition.getState().data);
 
-      if (current.current) {
-        current.current.style.transform = `translate(${delta.current[0]}px, ${delta.current[1]}px)`;
+      if (transition.getState().data?.type === 'translate') {
+        translate([e.pageX, e.pageY]);
       }
+      if (transition.getState().data?.type === 'transform') {
+        transform([e.pageX, e.pageY], transition.getState().data?.options);
+      }
+    }
+  };
+
+  const clickOutside = (e: MouseEvent) => {
+    console.log(e.target);
+    if (!e.defaultPrevented && e.target.tagName === 'svg') {
+      setSelected([]);
     }
   };
 
@@ -120,22 +209,102 @@ function App() {
     <div>
       <style>{styles}</style>
 
-      <svg width={800} height={600} onPointerMove={mousemove} onPointerUp={mouseup} onPointerLeave={mouseup}>
+      <svg
+        width={800}
+        height={600}
+        onPointerDown={clickOutside}
+        onPointerMove={mousemove}
+        onPointerUp={mouseup}
+        onPointerLeave={mouseup}
+      >
         <polygon points={points.map((r) => r.join(',')).join(' ')} fill={'#000'} />
+
+        <g name="shadow">
+          <polygon
+            ref={shadow}
+            points=""
+            fill="rgba(255, 0, 0, .5)"
+            style={{ pointerEvents: 'none', display: 'none' }}
+          />
+        </g>
 
         <g name="controls">
           {points.map((point, key) => {
+            const isActive = selectedPoints.includes(key);
+            // if (selectedBounds && selectedPoints.includes(key)) {
+            //   return null;
+            // }
+
             return (
               <circle
-                className={`controls ${selectedPoints.includes(key) ? 'controls--selected' : ''}`}
+                className={`controls ${isActive ? 'controls--selected' : ''}${
+                  selectedBounds ? ' controls--bounds' : ''
+                }`}
                 key={key}
                 cx={point[0]}
                 cy={point[1]}
-                r={5}
+                r={isActive && selectedBounds ? 3 : 5}
                 onPointerDown={handleToggle(point, key)}
               />
             );
           })}
+        </g>
+
+        <g name="bounding" ref={bounds}>
+          {selectedBounds && selectedBounds.width > 10 && selectedBounds.height > 10 ? (
+            <>
+              <rect
+                {...selectedBounds}
+                fill="transparent"
+                stroke="#eee"
+                strokeWidth="2"
+                onPointerDown={beginTranslate}
+              />
+              {/* Cardinals */}
+              {/*<rect*/}
+              {/*  aria-label="translate north"*/}
+              {/*  onPointerDown={handleTransform('north')}*/}
+              {/*  className={`controls`}*/}
+              {/*  x={selectedBounds.x + selectedBounds.width / 2 - 8}*/}
+              {/*  y={selectedBounds.y - 4}*/}
+              {/*  width={16}*/}
+              {/*  height={8}*/}
+              {/*/>*/}
+
+              <rect
+                onPointerDown={handleTransform('north-west')}
+                className={`controls`}
+                x={selectedBounds.x - 4}
+                y={selectedBounds.y - 4}
+                width={8}
+                height={8}
+              />
+              <rect
+                onPointerDown={handleTransform('north-east')}
+                className={`controls`}
+                x={selectedBounds.x + selectedBounds.width - 4}
+                y={selectedBounds.y - 4}
+                width={8}
+                height={8}
+              />
+              <rect
+                onPointerDown={handleTransform('south-east')}
+                className={`controls`}
+                x={selectedBounds.x + selectedBounds.width - 4}
+                y={selectedBounds.y + selectedBounds.height - 4}
+                width={8}
+                height={8}
+              />
+              <rect
+                onPointerDown={handleTransform('south-west')}
+                className={`controls`}
+                x={selectedBounds.x - 4}
+                y={selectedBounds.y + selectedBounds.height - 4}
+                width={8}
+                height={8}
+              />
+            </>
+          ) : null}
         </g>
       </svg>
       <button

@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 
 interface TransitionState {
+  data: any;
   isTransitioning: boolean;
   pointScale: number;
   points: [number, number][];
@@ -16,6 +17,7 @@ interface TransitionState {
    */
   currentRotation: number;
   currentTranslation: { x: number; y: number };
+  currentMatrix: number[];
   currentSkew: { x: number; y: number };
   currentScale: { x: number; y: number };
   visibleSnaps: [number, number, number, number][];
@@ -75,6 +77,7 @@ const initialState: TransitionState = {
   currentTranslation: { x: 0, y: 0 },
   currentSkew: { x: 0, y: 0 },
   currentScale: { x: 1, y: 1 },
+  currentMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
   origin: asOrigin([0, 0]),
   delta: [0, 0],
   initialTouches: [],
@@ -86,6 +89,7 @@ const initialState: TransitionState = {
   visibleSnapDistances: [],
   initialTouchAngle: 0,
   initialScale: 1,
+  data: undefined,
 };
 
 export const transitionState = () =>
@@ -98,13 +102,22 @@ export const transitionState = () =>
     return {
       ...initialState,
       startTransition(options: TransitionOptions) {
+        const activePoints = [];
+        for (const point of options.activePoints || []) {
+          if (activePoints.indexOf(point) === -1) {
+            activePoints.push(point);
+          }
+        }
+
         const state: Partial<TransitionState> = {
           points: options.points,
           initialPoints: options.points,
-          activePoints: options.activePoints || [],
+          activePoints,
+          data: options.data,
           pointScale: options.pointScale || 1,
           origin: options.origin ? asOrigin(options.origin) : asOrigin([0, 0]),
           initialScale: options.initialScale || 1,
+          isTransitioning: true,
         };
 
         if (state.activePoints && state.points) {
@@ -149,13 +162,15 @@ export const transitionState = () =>
         const state = getState();
         const result: TransitionResult = {
           points: state.points,
+          activePointsIndexes: state.activePoints,
           activePoints: state.activePoints.map((idx) => state.points[idx]),
           // Changes (alternative to points)
           rotation: state.currentRotation,
-          translation: { x: 0, y: 0 },
+          translation: state.currentTranslation,
           skew: state.currentSkew,
           scale: state.currentScale,
           origin: state.origin as [number, number],
+          data: state.data,
           originPoint: fromOrigin(state.origin, state.pointScale),
           // @todo add rotation to matrix.
           matrix: [
@@ -187,15 +202,23 @@ export const transitionState = () =>
 
         switch (options.direction) {
           case 'north': {
-            nextState.currentTranslation = { x: 0, y: -dy };
-            nextState.currentScale = { x: 0, y: dy * 0.01 };
+            nextState.currentTranslation = { x: 0, y: dy };
+            nextState.currentScale = { x: 1, y: 1 - dy * 0.0025 };
             break;
           }
-          case 'east':
-          case 'south':
+          case 'east': {
+            nextState.currentTranslation = { x: dx, y: 0 };
+            nextState.currentScale = { x: 1 + dx * 0.01, y: 1 };
+            break;
+          }
+          case 'south': {
+            nextState.currentTranslation = { x: 0, y: -dy };
+            nextState.currentScale = { x: 1, y: 1 + dy * 0.01 };
+            break;
+          }
           case 'west': {
             nextState.currentTranslation = { x: -dx, y: 0 };
-            nextState.currentScale = { x: dx * 0.01, y: 0 };
+            nextState.currentScale = { x: 1 + dx * 0.01, y: 1 };
             break;
           }
           case 'north-east':
@@ -206,14 +229,19 @@ export const transitionState = () =>
             break;
           }
         }
+
+        state.apply(nextState);
       },
       apply(nextState: Partial<TransitionState>) {
+        console.log('nextState', nextState);
+
         const state = getState();
         nextState.points = [...state.initialPoints];
         const activePoints = state.activePoints.length
           ? state.activePoints
           : (Object.keys(state.initialPoints) as any[] as number[]);
         const translation = nextState.currentTranslation;
+        const scale = nextState.currentScale;
 
         // Do this quickly and correctly to start with.
         if (translation) {
@@ -228,9 +256,22 @@ export const transitionState = () =>
         if (nextState.currentRotation) {
           // @todo apply rotation.
         }
-        if (nextState.currentScale) {
+        if (scale) {
           // @todo apply scale
+          for (const key of activePoints) {
+            const next = nextState.points[key as any];
+            nextState.points[key] = [next[0] * scale.x, next[1] * scale.y];
+          }
         }
+
+        nextState.currentMatrix = [
+          (nextState.currentScale || state.currentScale).x,
+          (nextState.currentSkew || state.currentSkew).x,
+          (nextState.currentSkew || state.currentSkew).y,
+          (nextState.currentScale || state.currentScale).y,
+          (nextState.currentTranslation || state.currentTranslation).x,
+          (nextState.currentTranslation || state.currentTranslation).y,
+        ];
 
         // @todo the result is [ state.points = fn(state.initialPoints) ]
 
@@ -364,8 +405,10 @@ interface ScaleOptions extends InteractionOptions {
 }
 
 interface TransitionResult {
+  data: any;
   points: [number, number][];
   activePoints: [number, number][];
+  activePointsIndexes: number[];
   rotation: number;
   origin: [number, number];
   originPoint: [number, number];
@@ -381,6 +424,7 @@ interface InteractionOptions {
 }
 
 interface TransitionOptions {
+  data?: any;
   points: [number, number][];
   origin?: [number, number];
   multiTouch?: boolean;

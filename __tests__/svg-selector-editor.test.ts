@@ -1,8 +1,8 @@
 import { describe } from 'vitest';
 import { svgSelectorEditor } from '../src/selector-editors/svg-selector-editor';
-import { parseSelector } from '../src';
 import invariant from 'tiny-invariant';
 import { transitionState } from '../src/selector-editors/transition-state';
+import { parseSelector } from '../src/annotation-targets/parse-selector';
 
 describe('Svg selector editor', () => {
   test('Simple editor', () => {

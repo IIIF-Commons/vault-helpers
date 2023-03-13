@@ -4,6 +4,8 @@ import { SvgSelector } from '../annotation-targets/selector-types';
 interface SvgSelectorEditor extends SvgSelector {
   points: Array<[number, number]>;
   options: SvgSelectorEditorOptions;
+  bounds: { width: number; height: number; x: number; y: number } | undefined;
+  selectedBounds: { width: number; height: number; x: number; y: number } | undefined;
   /**
    * A hint for rendering - should the shape be rendered as a line or closed shape.
    */
@@ -21,8 +23,10 @@ interface SvgSelectorEditor extends SvgSelector {
   translate(x: number, y: number): void;
   translateSelected(x: number, y: number): void;
   removeSelected(): void;
+  setSelected(indexes: number[]): void;
   recalculateSvg(): void;
   recalculateBounds(): void;
+  recalculateSelectedBounds(): void;
   recalculateSvgAsPolygon(): void;
   recalculateSvgAsRect(updatePoints?: boolean): void;
   closeShape(): void;
@@ -38,6 +42,7 @@ interface SvgSelectorEditor extends SvgSelector {
 interface SvgSelectorEditorOptions {
   initiallyOpen?: boolean;
   recalculateBounds?: boolean;
+  recalculateSelectedBounds?: boolean;
   recalculateSvg?: boolean;
   recalculateSvgAs?: 'polygon' | 'rect';
   trackSvg?: SVGElement;
@@ -93,6 +98,15 @@ export const svgSelectorEditor = (selector: SvgSelector, options: SvgSelectorEdi
         }
         if (state.options.trackSvg) {
           state.applyUpdatesToSvg(state.options.trackSvg);
+        }
+        if (state.options.recalculateSelectedBounds) {
+          state.recalculateSelectedBounds();
+        }
+      }
+
+      if (state.selectedPoints !== prevState.selectedPoints || state.points !== prevState.points) {
+        if (state.options.recalculateSelectedBounds) {
+          state.recalculateSelectedBounds();
         }
       }
     });
@@ -244,6 +258,12 @@ export const svgSelectorEditor = (selector: SvgSelector, options: SvgSelectorEdi
         });
       },
 
+      setSelected(indexes: number[]) {
+        setState((s) => {
+          return { selectedPoints: indexes };
+        });
+      },
+
       applyUpdatesToSvg(svg: SVGElement) {
         // @todo
         throw new Error('not implemented');
@@ -293,6 +313,20 @@ export const svgSelectorEditor = (selector: SvgSelector, options: SvgSelectorEdi
       recalculateBounds() {
         // @todo
         throw new Error('not implemented');
+      },
+      recalculateSelectedBounds() {
+        const state = getState();
+        if (state.selectedPoints.length > 1) {
+          const x = Math.min(...state.selectedPoints.map((idx) => state.points[idx][0]));
+          const x2 = Math.max(...state.selectedPoints.map((idx) => state.points[idx][0]));
+          const y = Math.min(...state.selectedPoints.map((idx) => state.points[idx][1]));
+          const y2 = Math.max(...state.selectedPoints.map((idx) => state.points[idx][1]));
+          const width = x2 - x;
+          const height = y2 - y;
+          setState({ selectedBounds: { x, y, width, height } });
+        } else {
+          setState({ selectedBounds: undefined });
+        }
       },
       openShape() {
         // @todo Mark as isClosed: false
