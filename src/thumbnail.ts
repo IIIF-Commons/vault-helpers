@@ -1,15 +1,12 @@
+import { ChoiceBody, CollectionItemSchemas, ContentResource, Reference } from '@iiif/presentation-3';
 import {
   AnnotationNormalized,
   AnnotationPageNormalized,
   CanvasNormalized,
-  ChoiceBody,
-  CollectionItemSchemas,
   CollectionNormalized,
-  ContentResource,
   DescriptiveNormalized,
   ManifestNormalized,
-  Reference,
-} from '@iiif/presentation-3';
+} from '@iiif/presentation-3-normalized';
 import {
   FixedSizeImage,
   FixedSizeImageService,
@@ -80,6 +77,7 @@ export function createThumbnailHelper(
       | AnnotationNormalized
       | AnnotationPageNormalized
       | ContentResource
+      | ChoiceBody
       | undefined = vault.get(input as any, { skipSelfReturn: false }) as any;
 
     if (typeof fullInput === 'string') {
@@ -92,7 +90,7 @@ export function createThumbnailHelper(
 
     const parseThumbnail = async (resource: DescriptiveNormalized) => {
       if (resource && resource.thumbnail && resource.thumbnail.length) {
-        const thumbnail = vault.get<ContentResource>(resource.thumbnail[0]);
+        const thumbnail = vault.get(resource.thumbnail[0]);
         const potentialThumbnails = await imageServiceLoader.getImageCandidates(thumbnail as any, dereference);
         if (potentialThumbnails && potentialThumbnails.length) {
           candidates.push(...potentialThumbnails);
@@ -107,7 +105,7 @@ export function createThumbnailHelper(
         // Grab the body.
         const contentResources = Array.isArray(fullInput.body) ? fullInput.body : [fullInput.body];
         // @todo this could be configuration.
-        const firstContentResources = vault.get<ContentResource>(contentResources[0]);
+        const firstContentResources = vault.get(contentResources[0]);
         if (dimensions && !(firstContentResources as any).width) {
           (firstContentResources as any).width = dimensions.width;
           (firstContentResources as any).height = dimensions.height;
@@ -137,7 +135,7 @@ export function createThumbnailHelper(
       }
 
       case 'Choice': {
-        const choice: ChoiceBody = fullInput as any;
+        const choice = fullInput;
         if (!choice.items || choice.items[0]) {
           return await thumbnailNotFound();
         }
@@ -178,12 +176,12 @@ export function createThumbnailHelper(
         return imageServiceLoader.getThumbnailFromResource(fullInput as any, request, dereference, candidates);
 
       // Seems unlikely these would appear, but it would be an error..
-      case 'Service': // @todo could do something with vault.
-      case 'Range':
-      case 'AnnotationCollection':
-      case 'CanvasReference':
-      case 'ContentResource':
-        return await thumbnailNotFound();
+      // case 'Service': // @todo could do something with vault.
+      // case 'Range':
+      // case 'AnnotationCollection':
+      // case 'CanvasReference':
+      // case 'ContentResource':
+      //   return await thumbnailNotFound();
     }
 
     return await thumbnailNotFound();

@@ -1,4 +1,4 @@
-import { Annotation } from '@iiif/presentation-3';
+import { Annotation, AnyMotivation } from '@iiif/presentation-3';
 import { expandTarget } from './annotation-targets/expand-target';
 import { SupportedTarget } from './annotation-targets/target-types';
 
@@ -131,7 +131,7 @@ export function normaliseContentState(state: ContentState): NormalisedContentSta
   }
 
   let annoId = 'vault://virtual-annotation/' + new Date().getTime(); // <-- need a virtual id
-  const motivation = ['contentState'];
+  const motivation: AnyMotivation[] = ['contentState'];
   const targets = [];
 
   for (const source of state) {

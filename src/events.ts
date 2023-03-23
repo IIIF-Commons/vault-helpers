@@ -52,7 +52,7 @@ export function createEventsHelper(vault: CompatVault = compatVault) {
       if (hooks && resource) {
         for (const hook of Object.keys(hooks)) {
           props[hook] = (e: any) => {
-            const fullResource = vault.get(resource);
+            const fullResource = vault.get<any>(resource);
             for (const { callback, scope: _scope } of hooks[hook] || []) {
               if (!_scope || (scope && _scope.indexOf(scope) !== -1)) {
                 callback(e, fullResource);

@@ -1,4 +1,5 @@
-import { CanvasNormalized, ManifestNormalized, RangeNormalized, Reference } from '@iiif/presentation-3';
+import { Reference } from '@iiif/presentation-3';
+import { CanvasNormalized, ManifestNormalized, RangeNormalized } from '@iiif/presentation-3-normalized';
 import { findAllCanvasesInRange } from './ranges';
 import { compatVault, CompatVault } from './compat';
 

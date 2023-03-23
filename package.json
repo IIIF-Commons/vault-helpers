@@ -114,9 +114,13 @@
     "prepublishOnly": "tsc -p . --declaration --emitDeclarationOnly && node ./vite/build.mjs",
     "test": "vitest"
   },
+  "resolutions": {
+    "@iiif/presentation-3": "^2.0.5"
+  },
   "dependencies": {
-    "@iiif/presentation-2": "1.x",
-    "@iiif/presentation-3": "1.x"
+    "@iiif/presentation-2": "1.0.4",
+    "@iiif/presentation-3": "2.0.5",
+    "@iiif/presentation-3-normalized": "^0.9.7"
   },
   "optionalDependencies": {
     "react-i18next": "^11.18.0",
@@ -126,12 +130,12 @@
   },
   "peerDependencies": {
     "@atlas-viewer/iiif-image-api": "^2.1.1",
-    "@iiif/vault": "0.9.x"
+    "@iiif/vault": "https://pkg.csb.dev/IIIF-Commons/vault/commit/7392ee81/@iiif/vault"
   },
   "devDependencies": {
     "@atlas-viewer/iiif-image-api": "^2.1.1",
-    "@iiif/vault": "^0.9.19",
-    "@iiif/parser": "^1.0.10",
+    "@iiif/vault": "https://pkg.csb.dev/IIIF-Commons/vault/commit/7392ee81/@iiif/vault",
+    "@iiif/parser": "https://pkg.csb.dev/IIIF-Commons/parser/commit/79a20658/@iiif/parser",
     "@types/jsdom": "^20.0.0",
     "@types/react": "^17.0.38",
     "@types/svg-arc-to-cubic-bezier": "^3.2.0",

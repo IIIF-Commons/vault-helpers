@@ -1,6 +1,5 @@
 import novieten from '../fixtures/exhibitions/novieten.json';
 import { Vault } from '@iiif/vault';
-import { CanvasNormalized, Manifest } from '@iiif/presentation-3';
 import invariant from 'tiny-invariant';
 import { createPaintingAnnotationsHelper } from '../src/painting-annotations';
 import { expandTarget } from '../src';
@@ -8,12 +7,12 @@ import { expandTarget } from '../src';
 describe('Exhibition helpers', () => {
   test('parsing exhibition', async () => {
     const vault = new Vault();
-    const manifest = await vault.load<Manifest>(novieten.id, novieten);
+    const manifest = await vault.loadManifest(novieten.id, novieten);
 
     expect(manifest).to.exist;
     invariant(manifest);
 
-    const canvases = vault.get<CanvasNormalized>(manifest.items);
+    const canvases = vault.get(manifest.items);
     const painting = createPaintingAnnotationsHelper(vault);
 
     const paintables = painting.getPaintables(canvases[0]);

@@ -1,11 +1,5 @@
-import { Vault } from '@iiif/vault';
-import {
-  AnnotationNormalized,
-  AnnotationPageNormalized,
-  CanvasNormalized,
-  ContentResource,
-  IIIFExternalWebResource,
-} from '@iiif/presentation-3';
+import { ContentResource, IIIFExternalWebResource } from '@iiif/presentation-3';
+import { AnnotationNormalized, CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { Paintables } from './types';
 import { parseSpecificResource } from './parse-specific-resource';
 import { compatVault, CompatVault } from '../compat';
@@ -21,10 +15,10 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
     if (!canvas) {
       return [];
     }
-    const annotationPages = vault.get<AnnotationPageNormalized>(canvas.items);
+    const annotationPages = vault.get(canvas.items, { parent: canvas });
     const flatAnnotations: AnnotationNormalized[] = [];
     for (const page of annotationPages) {
-      flatAnnotations.push(...vault.get<AnnotationNormalized>(page.items));
+      flatAnnotations.push(...vault.get(page.items, { parent: page }));
     }
     return flatAnnotations;
   }
@@ -45,7 +39,7 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
       if (annotation.type !== 'Annotation') {
         throw new Error(`getPaintables() accept either a canvas or list of annotations`);
       }
-      const unknownBodies = vault.get<ContentResource>(annotation.body);
+      const unknownBodies = vault.get(annotation.body, { parent: annotation, skipSelfReturn: false });
       const bodies = Array.isArray(unknownBodies) ? unknownBodies : [unknownBodies];
       for (const unknownBody of bodies) {
         const [body, { selector }] = parseSpecificResource(unknownBody);
@@ -53,7 +47,7 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
 
         // Choice
         if (type === 'choice') {
-          const nestedBodies = vault.get<ContentResource>(body.items) as ContentResource[];
+          const nestedBodies = vault.get((body as any).items, { parent: (body as any).id }) as ContentResource[];
 
           // Which are active? By default, the first, but we could push multiple here.
           const selected = enabledChoices.length

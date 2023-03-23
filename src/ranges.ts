@@ -1,5 +1,5 @@
-import { Vault } from '@iiif/vault';
-import { ManifestNormalized, RangeNormalized, Reference } from '@iiif/presentation-3';
+import { Reference } from '@iiif/presentation-3';
+import { ManifestNormalized, RangeNormalized } from '@iiif/presentation-3-normalized';
 import { CompatVault, compatVault } from './compat';
 
 export function createRangeHelper(vault: CompatVault = compatVault) {
@@ -14,8 +14,10 @@ export function createRangeHelper(vault: CompatVault = compatVault) {
 
 export function findFirstCanvasFromRange(vault: CompatVault, range: RangeNormalized): null | Reference<'Canvas'> {
   for (const inner of range.items) {
-    if (inner.type === 'Canvas') {
-      return inner as Reference<'Canvas'>;
+    if (inner.type === 'SpecificResource') {
+      if (inner.source?.type === 'Canvas') {
+        return inner.source as Reference<'Canvas'>;
+      }
     }
     if (inner.type === 'Range') {
       const found = findFirstCanvasFromRange(vault, vault.get(inner));
@@ -30,19 +32,17 @@ export function findFirstCanvasFromRange(vault: CompatVault, range: RangeNormali
 export function findAllCanvasesInRange(vault: CompatVault, range: RangeNormalized): Array<Reference<'Canvas'>> {
   const found: Reference<'Canvas'>[] = [];
   for (const inner of range.items) {
-    if (inner.type === 'Canvas') {
-      if (inner.id.indexOf('#') !== -1) {
-        found.push({ id: inner.id.split('#')[0], type: 'Canvas' });
-      } else {
-        found.push(inner as Reference<'Canvas'>);
+    if (inner.type === 'SpecificResource') {
+      if (inner.source?.type === 'Canvas') {
+        if (inner.source.id.indexOf('#') !== -1) {
+          found.push({ id: inner.source.id.split('#')[0], type: 'Canvas' });
+        } else {
+          found.push(inner.source as Reference<'Canvas'>);
+        }
       }
     }
     if (inner.type === 'Range') {
       found.push(...findAllCanvasesInRange(vault, vault.get(inner)));
-    }
-    if ((inner as any).type === 'SpecificResource') {
-      const sourceId = typeof (inner as any).source === 'string' ? (inner as any).source : (inner as any).source.id;
-      found.push({ id: sourceId, type: 'Canvas' });
     }
   }
   return found;
@@ -69,11 +69,7 @@ export function findSelectedRange(
   canvasId: string
 ): null | RangeNormalized {
   for (const inner of range.items) {
-    const parsedId = inner.id?.split('#')[0];
     if ((inner as any).type === 'SpecificResource' && (inner as any).source === canvasId) {
-      return range;
-    }
-    if (inner.type === 'Canvas' && canvasId === parsedId) {
       return range;
     }
     if (inner.type === 'Range') {
