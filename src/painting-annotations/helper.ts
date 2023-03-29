@@ -81,6 +81,7 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
 
         items.push({
           type: type,
+          annotationId: annotation.id,
           resource: body as IIIFExternalWebResource,
           target: annotation.target,
           selector,

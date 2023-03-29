@@ -24,6 +24,7 @@ export interface Paintables {
   items: Array<{
     type: string;
     resource: IIIFExternalWebResource | SpecificResource;
+    annotationId: string;
     target: any;
     selector: any;
   }>;
