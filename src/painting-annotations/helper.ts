@@ -39,16 +39,16 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
       if (annotation.type !== 'Annotation') {
         throw new Error(`getPaintables() accept either a canvas or list of annotations`);
       }
-      const unknownBodies = vault.get(annotation.body, { parent: annotation, skipSelfReturn: false });
-      const bodies = Array.isArray(unknownBodies) ? unknownBodies : [unknownBodies];
-      for (const unknownBody of bodies) {
-        const [body, { selector }] = parseSpecificResource(unknownBody);
+
+      const references = Array.from(Array.isArray(annotation.body) ? annotation.body : [annotation.body]);
+      for (const reference of references) {
+        const [ref, { selector }] = parseSpecificResource(reference as any);
+        const body = vault.get(ref);
         const type = (body.type || 'unknown').toLowerCase();
 
         // Choice
         if (type === 'choice') {
           const nestedBodies = vault.get((body as any).items, { parent: (body as any).id }) as ContentResource[];
-
           // Which are active? By default, the first, but we could push multiple here.
           const selected = enabledChoices.length
             ? enabledChoices.map((cid) => nestedBodies.find((b) => b.id === cid)).filter(Boolean)
@@ -66,11 +66,11 @@ export function createPaintingAnnotationsHelper(vault: CompatVault = compatVault
               label: (b as any).label as any,
               selected: selected.indexOf(b) !== -1,
             })) as any[],
-            label: (unknownBody as any).label,
+            label: (ref as any).label,
           };
 
           // @todo insert in the right order.
-          bodies.push(...(selected as any[]));
+          references.push(...(selected as any[]));
 
           continue;
         }

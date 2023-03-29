@@ -18,19 +18,32 @@ describe('Exhibition helpers', () => {
     const paintables = painting.getPaintables(canvases[0]);
     expect(paintables.items).toHaveLength(1);
 
-    const expanded = expandTarget({
+    const expandedSelector = expandTarget({
       type: 'SpecificResource',
       source: paintables.items[0].resource,
       selector: paintables.items[0].selector,
     });
-
-    expect(expanded.selector).toMatchInlineSnapshot(`
+    expect(expandedSelector.selector).toMatchInlineSnapshot(`
       {
         "spatial": {
           "height": 2749,
           "unit": "pixel",
           "width": 2666,
           "x": 559,
+          "y": 0,
+        },
+        "type": "BoxSelector",
+      }
+    `);
+
+    const expandedTarget = expandTarget(paintables.items[0].target);
+    expect(expandedTarget.selector).toMatchInlineSnapshot(`
+      {
+        "spatial": {
+          "height": 2749,
+          "unit": "pixel",
+          "width": 2666,
+          "x": 0,
           "y": 0,
         },
         "type": "BoxSelector",
