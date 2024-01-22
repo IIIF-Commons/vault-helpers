@@ -1,11 +1,11 @@
-# Vault helpers
+# [Vault helpers has moved to IIIF Helpers →](https://github.com/iiif-commons/iiif-helpers)
 
 ```
-npm i @iiif/vault-helpers
+npm i @iiif/helpers
 ```
 
 ```
-yarn add @iiif/vault-helpers
+yarn add @iiif/helpers
 ```
 
 List of existing, or planned helpers.
@@ -14,15 +14,12 @@ List of existing, or planned helpers.
 - [x] **i18n** - helpers for internationalized values, and integrations with existing tools
 - [x] **Styles** - a meta extension for storing CSS styles associated with IIIF content
 - [x] **Events** - a meta extension for storing event listeners associated with IIIF content
-- [ ] **Getters** - a vault wrapper, abstracting away references with javascript getters
-- [ ] **Rendering strategy** - Normalisation of canvas annotations into simple and implementable strategies for rendering
-- [ ] **Annotation page manager** - Discovery, loading and management of annotation pages
 
 ## i18n
 Some useful helpers for parsing language maps.
 
 ```ts
-import { getValue } from '@iiif/vault-helpers/i18n';
+import { getValue } from '@iiif/helpers/i18n';
 
 // Simple utility.
 const str1 = getValue(manifest.label); // based on browser
@@ -46,7 +43,7 @@ const str2 = buildLocaleString(
 Styles are a way to store Style information inside of Vault.
 
 ```ts
-import { createStyleHelper } from '@iiif/vault-helpers/styles';
+import { createStyleHelper } from '@iiif/helpers/styles';
 
 const vault = new Vault();
 const styles = createStyleHelper(vault);
@@ -79,7 +76,7 @@ to bind the events, but those events could come from many sources.
 Useful in UI frameworks where an alternative may be to drill down props through layers of components. 
 
 ```ts
-import { createEventsHelper } from '@iiif/vault-helpers/styles';
+import { createEventsHelper } from '@iiif/helpers/styles';
 
 const vault = new Vault();
 const events = createEventsHelper(vault);
@@ -101,7 +98,7 @@ $el.addEventListener('click', props.onClick);
 Work-in-progress vault-driven thumbnails.
 
 ```ts
-import { createThumbnailHelper } from '@iiif/vault-helpers/thumbnail';
+import { createThumbnailHelper } from '@iiif/helpers/thumbnail';
 
 const vault = new Vault();
 const helper = createThumbnailHelper(vault);
